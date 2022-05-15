@@ -1,8 +1,6 @@
-#include "Socket.hpp"
 #include <iostream>
 
 #include "ConnectionListener.hpp"
-
 #include "Talker.hpp"
 
 int main()
@@ -12,7 +10,9 @@ int main()
     //c.Listen();
     //c.Accept();
 
-    Talker t("::1", 8888, SOCK_STREAM);
+    Talker t("127.0.0.1", 8888, SOCK_STREAM);
+    t.Send("Hello");
+    std::cout<<"Server sends back: "<<t.Receive()<<"\n";
 
     return 0;
 }
