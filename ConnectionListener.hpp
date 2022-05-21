@@ -26,7 +26,7 @@ public:
 
     // Listen for incoming connections
     // Block the program until a connection is received
-    // Should be used
+    // Should be used in a separate thread. I don't know. You tell me!
     void Listen();
 
     // Return a Talker for sending & receiving messages
@@ -38,7 +38,10 @@ public:
 
 private:
     // getaddrinfo() results
-    addrinfo* _adList;
+    // addrinfo* _adList;
+
+    addrinfo _ad;
+    sockaddr_storage _ss; 
 
     // socket() result. 
     // Used to listen for incoming connections

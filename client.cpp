@@ -3,7 +3,7 @@
 #include "ConnectionListener.hpp"
 #include "Talker.hpp"
 
-int main()
+int Main(int argc, char *argv[])
 {
 
     //ConnectionListener c(9999, SOCK_STREAM);

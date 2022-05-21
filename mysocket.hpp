@@ -1,25 +1,33 @@
 #ifndef MYSOCKET_HPP
 #define MYSOCKET_HPP
 
-// For close()
-#include <unistd.h>
+#ifdef _WIN32
 
-// For send(), recv(), bla bla...
-#include <sys/socket.h>
+    #include <winsock.h>
 
-// For addrinfo and tons of other structs
-#include <netdb.h>
+#else
 
-// For inet_ntop
-#include <arpa/inet.h>
+    // For close()
+    #include <unistd.h>
 
-// For memset
-#include <string.h>
+    // For send(), recv(), bla bla...
+    #include <sys/socket.h>
 
-// For all network calls.
-// They all set errno 
-#include <errno.h>
+    // For addrinfo and tons of other structs
+    #include <netdb.h>
 
-#include <string>
+    // For inet_ntop
+    #include <arpa/inet.h>
+
+    // For memset
+    #include <string.h>
+
+    // For all network calls.
+    // They all set errno 
+    #include <errno.h>
+
+    #include <string>
+
+#endif /*_WIN32*/
 
 #endif /* MYSOCKET_HPP */

@@ -19,6 +19,13 @@ Talker::Talker(const std::string &ip, int port, int ai_socktype): _sockType(ai_s
     freeaddrinfo(result);
 }
 
+Talker::Talker(int acceptedSocket, sockaddr_storage sockInfo, int sockType):
+    _remoteInfo(sockInfo),
+    _sock(acceptedSocket),
+    _sockType(sockType)
+{
+}
+
 addrinfo* Talker::GetAddrInfo(const std::string &ip, int port, int ai_socktype)
 {
     addrinfo ad;
@@ -58,14 +65,7 @@ addrinfo* Talker::GetAddrInfo(const std::string &ip, int port, int ai_socktype)
 
 Talker::~Talker()
 {
-    shutdown(_sock, SHUT_RDWR);
-}
-
-Talker::Talker(int acceptedSocket, sockaddr_storage sockInfo, int sockType):
-    _remoteInfo(sockInfo),
-    _sock(acceptedSocket),
-    _sockType(sockType)
-{
+    close(_sock);
 }
 
 void Talker::Send(const std::string& message)
