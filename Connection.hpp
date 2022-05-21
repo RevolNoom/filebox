@@ -1,15 +1,15 @@
-#ifndef TALKER_HPP
-#define TALKER_HPP
+#ifndef CONNECTION_HPP
+#define CONNECTION_HPP
 
 #include "mysocket.hpp"
 
 // This socket is used for sending & receiving messages 
-class Talker
+class Connection
 {
 public:
     // Try to connect to ip:port destination
-    Talker(const std::string &ip, int port, int ai_socktype);
-    ~Talker();
+    Connection(const std::string &ip, int port, int ai_socktype);
+    ~Connection();
 
     void Send(const std::string& message);
     std::string Receive();
@@ -20,7 +20,7 @@ public:
 
 private:
     friend class ConnectionListener;
-    Talker(int acceptedSocket, sockaddr_storage sockInfo, int sockType);
+    Connection(int acceptedSocket, sockaddr_storage sockInfo, int sockType);
 
     // I say it's an IPv6 if it has a ':' in it
     bool IsIPv6QuickCheck(const std::string &ip);
@@ -34,4 +34,4 @@ private:
     char _recvBuffer[1000];
 };
 
-#endif /* TALKER_HPP */
+#endif /* CONNECTION_HPP */

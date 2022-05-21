@@ -2,7 +2,7 @@
 
 #include "mysocket.hpp"
 #include "ConnectionListener.hpp"
-#include "Talker.hpp"
+#include "Connection.hpp"
 
 int Main(int argc, char *argv[])
 {

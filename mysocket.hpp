@@ -1,8 +1,11 @@
 #ifndef MYSOCKET_HPP
 #define MYSOCKET_HPP
 
-#ifdef _WIN32
+// Low-level libraries includes
 
+#if defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__)
+
+    // For wtf, I have no ideas 
     #include <winsock.h>
 
 #else

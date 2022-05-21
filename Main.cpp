@@ -1,9 +1,5 @@
 #include <iostream>
 
-#include "mysocket.hpp"
-#include "ConnectionListener.hpp"
-#include "Talker.hpp"
-
 int Main(int argc, char *argv[]);
 
 int main(int argc, char *argv[])
@@ -22,7 +18,7 @@ int main(int argc, char *argv[])
         // MAKEWORD(1,1) for Winsock 1.1, MAKEWORD(2,0) for Winsock 2.0:
         if (WSAStartup(MAKEWORD(1,1), &wsaData) != 0) 
         {
-            fprintf(stderr, "WSAStartup failed.\n");
+            std::cerr<<"WSAStartup failed.\n";
             exit(1);
         }
 

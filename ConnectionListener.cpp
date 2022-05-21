@@ -1,5 +1,5 @@
 #include "ConnectionListener.hpp"
-#include "Talker.hpp"
+#include "Connection.hpp"
 #include <iostream>
 
 ConnectionListener::ConnectionListener(int port, int ai_socktype): _ad(), _mySock()
@@ -66,12 +66,12 @@ void ConnectionListener::Listen()
     listen(_mySock, 20);
 }
 
-Talker ConnectionListener::Accept()
+Connection ConnectionListener::Accept()
 {
     sockaddr_storage newSA;
     socklen_t addr_size = sizeof(newSA);
     int newSock = accept(_mySock, (sockaddr*) &newSA, &addr_size);
-    return Talker(newSock, newSA, GetSockType());
+    return Connection(newSock, newSA, GetSockType());
 }
 
 int ConnectionListener::GetSockType()

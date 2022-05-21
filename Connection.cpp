@@ -1,7 +1,7 @@
-#include "Talker.hpp"
+#include "Connection.hpp"
 #include <iostream>
 // Try to connect to ip:port destination
-Talker::Talker(const std::string &ip, int port, int ai_socktype): _sockType(ai_socktype)
+Connection::Connection(const std::string &ip, int port, int ai_socktype): _sockType(ai_socktype)
 {
     auto result = GetAddrInfo(ip, port, ai_socktype);
 
@@ -19,14 +19,14 @@ Talker::Talker(const std::string &ip, int port, int ai_socktype): _sockType(ai_s
     freeaddrinfo(result);
 }
 
-Talker::Talker(int acceptedSocket, sockaddr_storage sockInfo, int sockType):
+Connection::Connection(int acceptedSocket, sockaddr_storage sockInfo, int sockType):
     _remoteInfo(sockInfo),
     _sock(acceptedSocket),
     _sockType(sockType)
 {
 }
 
-addrinfo* Talker::GetAddrInfo(const std::string &ip, int port, int ai_socktype)
+addrinfo* Connection::GetAddrInfo(const std::string &ip, int port, int ai_socktype)
 {
     addrinfo ad;
     memset(&ad, 0, sizeof(ad));
@@ -63,12 +63,12 @@ addrinfo* Talker::GetAddrInfo(const std::string &ip, int port, int ai_socktype)
     return result;
 }
 
-Talker::~Talker()
+Connection::~Connection()
 {
     close(_sock);
 }
 
-void Talker::Send(const std::string& message)
+void Connection::Send(const std::string& message)
 {
     long long messageSize = message.length()*sizeof(message[0]);
     long long sentSize(0);
@@ -79,23 +79,23 @@ void Talker::Send(const std::string& message)
     {
         int bytes_sent = send(_sock, s.begin(), s.size() , 0);
         if (bytes_sent == -1)
-            throw std::runtime_error("Talker failed to send message. Check errno (in <errno.h>) for what happened.");
+            throw std::runtime_error("Connection failed to send message. Check errno (in <errno.h>) for what happened.");
 
         sentSize += bytes_sent;
         s.substr(bytes_sent);
     }
 }
 
-std::string Talker::Receive()
+std::string Connection::Receive()
 {
     int bytes_read = recv(_sock, _recvBuffer, sizeof(_recvBuffer), 0);
     if (bytes_read == -1)
-        throw std::runtime_error("Talker failed to receive message. See @errno (in <errno.h>) for more details.");
+        throw std::runtime_error("Connection failed to receive message. See @errno (in <errno.h>) for more details.");
 
     return std::string(_recvBuffer).substr(0, bytes_read);
 }
 
-std::string Talker::GetRemoteIP()
+std::string Connection::GetRemoteIP()
 {
     char ip[INET6_ADDRSTRLEN];
     const void *ipField;
@@ -108,7 +108,7 @@ std::string Talker::GetRemoteIP()
     return inet_ntop(_remoteInfo.ss_family, ipField, ip, INET6_ADDRSTRLEN);
 }
 
-int Talker::GetPort()
+int Connection::GetPort()
 {
     if (_remoteInfo.ss_family == AF_INET6) 
         return static_cast<int>(reinterpret_cast<sockaddr_in6*>(&_remoteInfo)->sin6_port);
@@ -116,12 +116,12 @@ int Talker::GetPort()
 }
 
 
-int Talker::GetSockType()
+int Connection::GetSockType()
 {
     return _sockType; 
 }
 
-bool Talker::IsIPv6QuickCheck(const std::string &ip)
+bool Connection::IsIPv6QuickCheck(const std::string &ip)
 {
     return ip.find(':') != std::string::npos;
 }

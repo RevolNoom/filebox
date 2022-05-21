@@ -8,7 +8,7 @@
 
 
 
-class Talker;
+class Connection;
 
 class ConnectionListener
 {
@@ -29,8 +29,8 @@ public:
     // Should be used in a separate thread. I don't know. You tell me!
     void Listen();
 
-    // Return a Talker for sending & receiving messages
-    Talker Accept();
+    // Return a Connection for sending & receiving messages
+    Connection Accept();
 
     // Stop listening for new connections
     void Close();
