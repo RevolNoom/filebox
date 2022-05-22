@@ -5,15 +5,13 @@ An app to connect you to a file server.
 
 # Building project
 
-You will compile the server and the client separately with the CORE_PACKAGE,
-which is a pack of C++ source files.
-
-On Linux:
+If you have "make", simply type:
 
 ```
-CORE_PACKAGE="Main.cpp ConnectionListener.cpp Talker.cpp"
-g++ client.cpp $CORE_PACKAGE -o client
-g++ server.cpp $CORE_PACKAGE -o server 
+make
 ```
 
-On Windows: I don't know (yet).
+And everything will be done for you.
+
+In case you don't, open Makefile and copy paste the compilation lines. 
+Do whatever you want. I don't care.

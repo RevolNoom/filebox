@@ -2,6 +2,9 @@
 #define FILESYSTEM_HPP
 
 #include <string>
+#include <filesystem>
+
+class File;
 
 class Filesystem 
 {
@@ -11,21 +14,46 @@ public:
     // the executable is in
     Filesystem();
 
-    Filesystem(std::string rootDirectory);
-
-    // Return the file, converted into an std::string
-    // Don't bother cout-ing it. Just imagine it's absolute gibberish
-    // Return ??? (I haven't decided yet) if the file is not found.
-    std::string GetFile(std::string filePath);
+    Filesystem(const std::string& rootDirectory);
+ 
+    File GetFile(const std::string& filePath);
 
     // Return the paths to all the files and empty directories in this filesystem 
-    // Each path is separated by a space " "
+    // Each path is separated by a newline "\n"
     // If @absolutePath = true, return absolute paths instead of relative path from
     // this filesystem root
     std::string GetRecursiveFileList(bool absolutePath = false);
 
 private:
-    std::string _rootDirectory;
+    std::filesystem::path _rootDirectory;
+};
+
+class File
+{
+public:
+    friend class Filesystem;
+
+    // Return the size in bytes
+    // -1 if the file is invalid.
+    int GetSize();
+
+    // Return true if the file is a regular file.
+    bool IsValid();
+
+    std::string GetContent();
+
+    const std::string GetFileName();
+
+    // Return the path to this file
+    // If @absolutePath = true, the path will be 
+    // absolute on the host Operating System 
+    const std::string GetPath(bool absolutePath = false);
+
+private:
+    File() {}
+    File(const std::string& filePath);
+
+    std::filesystem::path _path;
 };
 
 #endif /* FILESYSTEM_HPP */
