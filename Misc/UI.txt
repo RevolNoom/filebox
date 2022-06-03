@@ -1,0 +1,59 @@
+I. Màn hình chính khi mới bật chương trình
+
+<< Welcome to Filebox >>
+1. Login
+2. Register
+
+
+
+II. Đăng nhập (login):
+
+<< Enter your credentials >>
+Username: abc123
+Password: ******
+
+
+
+III. Sau khi đăng nhập:
+
+<< Hello, username >>
+Type "-h" to show available commands.
+Type "-h command" to get detailed command usage.
+username:/working/directory$ [người dùng nhập lệnh, tương tác từ đây như python]
+
+
+
+IV. Nhập lệnh ls:
+
+username:/working/directory$ ls
+File1
+File2 
+File3
+File4 
+
+
+
+V. Nhập lệnh cd:
+
+username:/current/working$ cd directory
+username:/current/working/directory$ [Chuyển người dùng sang thư mục mới, đợi lệnh tiếp]
+
+
+
+VI. Upload:
+upload /đường/dẫn/đến/file/trên/máy/người/dùng /đường/dẫn/đến/vị/trí/upload/lên/server
+
+username:/working/directory$ upload "C:\\File" /working/directory
+Uploading: [##########]	(Mỗi một # tương ứng 10% tiến độ)
+Done.
+username:/working/directory$ 
+
+
+
+VI. Download:
+download /đường/dẫn/đến/tệp/Download/ở/trên/server /đường/dẫn/đích/đến/máy/người/dùng 
+
+username:/working/directory$ download /working/directory/file "C:\\" 
+Downloading: [##########]	(Mỗi một # tương ứng 10% tiến độ)
+Done.
+username:/working/directory$ 

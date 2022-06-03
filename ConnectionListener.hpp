@@ -5,7 +5,7 @@
 #include <memory>
 
 #include "mysocket.hpp"
-
+#include <memory>
 
 
 class Connection;
@@ -14,7 +14,7 @@ class ConnectionListener
 {
 public:
 
-    // Only works with IPv4. 127.0.0.1
+    // Only works with IPv6. ::1
     // @port: Port that this socket will listen to
     // @ai_socktype: SOCK_DGRAM for UDP, SOCK_STREAM for TCP
     ConnectionListener(int port, int ai_socktype);
@@ -30,7 +30,9 @@ public:
     void Listen();
 
     // Return a Connection for sending & receiving messages
-    Connection Accept();
+    // It is a shared object to prevent accidental socket closing
+    // because of object destruction
+    std::shared_ptr<Connection> Accept();
 
     // Stop listening for new connections
     void Close();

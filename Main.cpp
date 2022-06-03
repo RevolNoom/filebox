@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
             exit(1);
         }
 
-        mainReal(argc, argv);
+        Main(argc, argv);
 
         WSACleanup();
     #else

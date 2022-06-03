@@ -12,8 +12,8 @@ int Main(int argc, char *argv[])
     ConnectionListener c(8888, SOCK_STREAM);
     c.Listen();
     auto t = c.Accept();
-    std::cout<<"Client says: "<<t.Receive()<<"\n";
-    t.Send("Hey");
+    std::cout<<"Client says: "<<t->Receive()<<"\n";
+    t->Send("Hey");
 
     return 0;
 }

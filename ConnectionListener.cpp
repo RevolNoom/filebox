@@ -6,24 +6,22 @@ ConnectionListener::ConnectionListener(int port, int ai_socktype): _ad(), _mySoc
 {
     memset(&_ad, 0, sizeof(_ad));
 
-    int serviceProviderChooseProtocolForMe = 0;
+    constexpr int serviceProviderChooseProtocolForMe = 0;
 
-    //_ad.ai_addrlen = INET6_ADDRSTRLEN;
-    _ad.ai_family = AF_UNSPEC;
-    _ad.ai_socktype=SOCK_STREAM;
+    _ad.ai_addrlen = INET6_ADDRSTRLEN;
+    _ad.ai_family = AF_INET6;
+    _ad.ai_socktype=ai_socktype;
     _ad.ai_flags = AI_PASSIVE;
     _ad.ai_protocol=serviceProviderChooseProtocolForMe;
     _ad.ai_addr = reinterpret_cast<sockaddr*>(&_ss);
     
     memset(&_ss, 0, sizeof(_ss));
     auto ss = reinterpret_cast<sockaddr_in*>(&_ss);
-    ss->sin_family = AF_INET;
+    ss->sin_family = AF_INET6;
+    inet_pton(AF_INET6, "::1", &(ss->sin_addr.s_addr));
+    //inet_pton(AF_INET, "127.0.0.1", &(ss->sin_addr.s_addr));
     ss->sin_port = htons(port);
     ss->sin_addr.s_addr = htonl(INADDR_ANY);
-
-    //ad.ai_family = AF_UNSPEC; // v4 or v6 are both fineeee
-    //ad.ai_flags = AI_PASSIVE; // Fill my IP for me
-    //ad.ai_socktype = ai_socktype;
 
     addrinfo* adList = nullptr;
 
@@ -32,24 +30,25 @@ ConnectionListener::ConnectionListener(int port, int ai_socktype): _ad(), _mySoc
     status = getaddrinfo(NULL, std::to_string(port).c_str(), &_ad, &adList);
 
     if (status != 0)
-        throw std::runtime_error("ConnectionListener failed to getaddrinfo.");
+        ThrowErrnoMsg("ConnectionListener failed to getaddrinfo: ");
 
     // TODO: Traverse "result" list for valid entry?
     // Here I'm assuming the first entry is always good
-    //_mySock = socket(_adList->ai_family, _adList->ai_socktype, _adList->ai_protocol);
     _mySock = socket(adList->ai_family, 
                     adList->ai_socktype, 
                     adList->ai_protocol);
                 
+    //std::cout<<"ConnectionListener new socket: "<<_mySock<<"\n";
+
     if (_mySock == -1)
-        throw std::runtime_error("ConnectionListener failed to create a socket.");
+        ThrowErrnoMsg("ConnectionListener failed to create a socket: ");
 
     _closed = false;
     
     status = bind(_mySock, adList->ai_addr, adList->ai_addrlen);
 
     if (status == -1)
-        throw std::runtime_error("ConnectionListener failed to bind socket.");
+        ThrowErrnoMsg("ConnectionListener failed to bind socket: ");
 
     freeaddrinfo(adList);
 }
@@ -57,7 +56,6 @@ ConnectionListener::ConnectionListener(int port, int ai_socktype): _ad(), _mySoc
 ConnectionListener::~ConnectionListener()
 {
     Close();
-    //freeaddrinfo(_adList);
 }
 
 void ConnectionListener::Listen()
@@ -66,17 +64,23 @@ void ConnectionListener::Listen()
     listen(_mySock, 20);
 }
 
-Connection ConnectionListener::Accept()
+std::shared_ptr<Connection> ConnectionListener::Accept()
 {
     sockaddr_storage newSA;
     socklen_t addr_size = sizeof(newSA);
     int newSock = accept(_mySock, (sockaddr*) &newSA, &addr_size);
-    return Connection(newSock, newSA, GetSockType());
+    //std::cout<<"Accepted new socket: "<<newSock<<"\n";
+    if (newSock == -1)
+    {
+        ThrowErrnoMsg("ConnectionListener bad accept: ");
+    }
+    auto newConnection = std::shared_ptr<Connection>(new Connection(newSock, newSA, GetSockType()));
+    return newConnection;
 }
 
 int ConnectionListener::GetSockType()
 {
-    return _ad.ai_socktype; //_adList->ai_socktype;
+    return _ad.ai_socktype; 
 }
 
 void ConnectionListener::Close()

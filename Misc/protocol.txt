@@ -1,0 +1,93 @@
+METADATA:
++) Định dạng:
+Tên_file:Kích_Cỡ_CHÍNH_XÁC_THEO_BYTE
++) Ví dụ:
+presentation.pdf:3500 (file tên là presentation.pdf, kích thước 3500 byte (3.5KB))
+
+
+
+I. Client upload lên server
+Client gửi: "up /thư_mục_đến/trên_server/ METADATA"
+Server gửi: "ok_up" nếu không có lỗi. "no_up ERROR_CODE" nếu có lỗi xảy ra
+Client bắt đầu truyền tệp.
+Server dừng tiếp nhận thêm gói tin khi đã nhận đủ kích thước theo metadata
+
+
+
+II. Client download từ server
+Client gửi: "down /thư_mục/trên_server/tên_file"
+Server gửi: "ok_down METADATA" nếu không có lỗi. "no_down ERROR_CODE" nếu có lỗi xảy ra
+Client gửi: "ok_down" nếu không có lỗi. "no_down" nếu có lỗi xảy ra (hết bộ nhớ trên máy chẳng hạn).
+Server bắt đầu truyền tệp.
+Client dừng tiếp nhận thêm gói tin khi đã nhận đủ kích thước theo metadata
+
+
+
+III. Client nhập lệnh ls:
+Màn hình hiện lên danh sách tệp tin cũ
+Song song với đó, client gửi: "ls thời_gian_hiện_tại"
+Server gửi "ok_ls" nếu hệ thống tập tin chưa thay đổi từ lúc client gửi
+Server gửi lại cây hệ thống tập tin nếu cây hệ thống tập tin đã thay đổi trước thời_gian_hiện_tại.
+Giả sử Cây hệ thống tập tin trên server đang như này:
+/
+|_ dir1
+|_ dir2
+   |_ file2
+|_ file1
+
+Thì tin nhắn server gửi về sẽ như sau:
+update_ls file1 dir1/ dir2/file2 
+Có thể gửi theo thứ tự khác nhau. Ví dụ như "update_ls  dir1/ dir2/file2 file1". Miễn là in đầy đủ
+đường dẫn tuyệt đối của file.
+
+Lưu ý: Nếu cây hệ thống tập tin hiu quạnh chả có file, thư mục nào, thì tin nhắn gửi về chỉ vỏn vẹn:
+
+update_ls
+
+Hết
+
+
+### Đây là thuật toán gửi cây khác, tin nhắn ngắn hơn nhưng xử lí lằng nhằng hơn. Rảnh thì làm. 
+Giả sử Cây hệ thống tập tin trên server đang như này:
+/
+|_ dir1
+|_ dir2
+   |_ dir3
+      |_ file2
+      |_ file3
+   |_ dir4
+      |_ file4
+   |_ dir5
+      |_ dir6
+      |_ dir7
+         |_ file5 
+|_ file1
+
+"root" "/" chứa hai thư mục dir1 dir2, và một tệp file3. dir1 là thư mục rỗng. dir2 chứa 2 tệp file1 file2. 
+
+ 
+Thì tin nhắn server gửi về sẽ như sau:
+update_ls file1 dir1/ dir2/dir3/file2 file3 ../dir4/file4 ../dir5/dir6/ dir7/file5
+
+Giải thích:
+
+update_ls là từ khóa. Không có gì đặc sắc.
+Chúng ta soi cây, bắt đầu từ root /
+Ưu tiên trả về tệp thường trước thư mục. Ở root, có tệp file1, nên "file1" được thêm vào tin nhắn
+Sau đó, thư mục "dir1" ưu tiên thấp hơn file1, nên được thêm vào tin nhắn sau đó. 
+Vì dir1 là thư mục rỗng, dir1 sẽ có kí hiệu "/" ở cuối, và chúng ta không thay đổi vị trí soi cây hiện tại.
+
+Tiếp đến, chúng ta chuyển vị trí soi cây sang dir2. Ở dir2 toàn thư mục, nên chúng ta chuyển tiếp sang dir3. 
+Lấy 1 file ở dir2, file2 chẳng hạn. Thêm vào tin nhắn, thành "dir2/dir3/file2"
+ 
+Lúc này, vị trí soi cây đang ở /dir2/dir3, ở đó có file3 nữa, nên chúng ta thêm "file3" vào tin nhắn.
+/dir2/dir3 đã hết file, chúng ta chuyển vị trí soi ra ngoài (".."), rồi đi tiếp đến dir4. Ở dir4 có file4,
+thêm "../dir4/file4"
+
+Vị trí soi cây đang ở /dir2/dir4, chúng ta chuyển ra ngoài rồi vào dir5. Toàn thư mục. Chọn bừa dir6. dir6 là
+thư mục rỗng, nên chúng ta thêm "../dir5/dir6/" vào tin nhắn (đừng quên dấu "/" ở cuối tức là thư mục rỗng, và
+chúng ta không đi vào thư mục rỗng)
+
+Vị trí soi cây đang ở /dir2/dir5, chúng ta chuyển vào dir7. dir7 có file5. Thêm "dir7/file5" vào tin nhắn. 
+Kết thúc tin nhắn.
+###
