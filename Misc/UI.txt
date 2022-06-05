@@ -5,8 +5,16 @@ I. Màn hình chính khi mới bật chương trình
 2. Register
 
 
+II. Đăng ký (Register):
 
-II. Đăng nhập (login):
+<< Enter your informations >>
+Username: abc123
+Password: ******
+Re-type Password: ******
+
+
+
+II.1. Đăng nhập (login):
 
 << Enter your credentials >>
 Username: abc123
@@ -44,7 +52,7 @@ VI. Upload:
 upload /đường/dẫn/đến/file/trên/máy/người/dùng /đường/dẫn/đến/vị/trí/upload/lên/server
 
 username:/working/directory$ upload "C:\\File" /working/directory
-Uploading: [##########]	(Mỗi một # tương ứng 10% tiến độ)
+Uploading... (Có thể làm thêm thanh tiến độ kiểu: [##########] , mỗi một # tương ứng 10% tiến độ)
 Done.
 username:/working/directory$ 
 
@@ -54,6 +62,10 @@ VI. Download:
 download /đường/dẫn/đến/tệp/Download/ở/trên/server /đường/dẫn/đích/đến/máy/người/dùng 
 
 username:/working/directory$ download /working/directory/file "C:\\" 
-Downloading: [##########]	(Mỗi một # tương ứng 10% tiến độ)
+Downloading... (Có thể làm thêm thanh tiến độ như trên)
 Done.
 username:/working/directory$ 
+
+
+VII. Xóa File
+delete /đường/dẫn/đến/tệp/trên/server
