@@ -28,7 +28,7 @@ public:
 
     std::string Receive();
 
-    std::string GetRemoteIP();
+    std::string GetRemoteIP() const;
 
     //int GetPort();
     //int GetSockType();
@@ -42,8 +42,8 @@ private:
     Connection(int acceptedSocket, sockaddr_storage sockInfo, int sockType);
 
     // I say it's an IPv6 if it has a ':' in it
-    bool IsIPv6QuickCheck(const std::string &ip);
-    addrinfo* GetAddrInfo(const std::string &ip, int port, int ai_socktype);
+    bool IsIPv6QuickCheck(const std::string &ip) const;
+    addrinfo* GetAddrInfo(const std::string &ip, int port, int ai_socktype) const;
 
 private:
 

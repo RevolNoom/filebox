@@ -47,44 +47,7 @@ Connection::Connection(int acceptedSocket, sockaddr_storage sockInfo, int sockTy
         ThrowErrnoMsg("Connection failed to create new socket: ");
     }
 
-    //std::cout<<"Connection new socket: "<<_sock<<"\n";
-}
-
-addrinfo* Connection::GetAddrInfo(const std::string &ip, int port, int ai_socktype)
-{
-    addrinfo ad;
-    memset(&ad, 0, sizeof(ad));
-
-    sockaddr_storage ss;
-
-    if (IsIPv6QuickCheck(ip))
-    {
-        sockaddr_in6 s6;
-        memset(&s6, 0, sizeof(s6));
-        s6.sin6_family = AF_INET6;
-        s6.sin6_port = port;
-        ss = *reinterpret_cast<sockaddr_storage*>(&s6);
-    }
-    else
-    {
-        sockaddr_in s4;
-        memset(&s4, 0, sizeof(s4));
-        s4.sin_family = AF_INET;
-        s4.sin_port = port;
-        ss = *reinterpret_cast<sockaddr_storage*>(&s4);
-    }
-
-    ad.ai_addr = reinterpret_cast<sockaddr*>(&ss);
-    ad.ai_family = ss.ss_family;
-    ad.ai_socktype = ai_socktype;
-
-    addrinfo* result;
-
-    // TODO: Check returned error code 
-    //std::cout<<"Get addrinfo: "<<getaddrinfo(ip.c_str(), std::to_string(sin6.sin6_port).c_str(), &ad, &result)<<"\n";
-    getaddrinfo(ip.c_str(), std::to_string(port).c_str(), &ad, &result);
-
-    return result;
+    std::cout<<"Connection new socket: "<<_sock<<"\n";
 }
 
 Connection::~Connection()
@@ -142,15 +105,15 @@ std::string Connection::Receive()
     return msg;
 }
 
-std::string Connection::GetRemoteIP()
+std::string Connection::GetRemoteIP() const
 {
     char ip[INET6_ADDRSTRLEN];
     const void *ipField;
 
     if (_remoteInfo.ss_family == AF_INET6) 
-        ipField = &(reinterpret_cast<sockaddr_in6*>(&_remoteInfo)->sin6_addr);
+        ipField = &(reinterpret_cast<const sockaddr_in6*>(&_remoteInfo)->sin6_addr);
     else 
-        ipField = &(reinterpret_cast<sockaddr_in*>(&_remoteInfo)->sin_addr);
+        ipField = &(reinterpret_cast<const sockaddr_in*>(&_remoteInfo)->sin_addr);
 
     return inet_ntop(_remoteInfo.ss_family, ipField, ip, INET6_ADDRSTRLEN);
 }
@@ -169,7 +132,44 @@ int Connection::GetSockType()
 }
 */
 
-bool Connection::IsIPv6QuickCheck(const std::string &ip)
+bool Connection::IsIPv6QuickCheck(const std::string &ip) const
 {
     return ip.find(':') != std::string::npos;
+}
+
+addrinfo* Connection::GetAddrInfo(const std::string &ip, int port, int ai_socktype) const
+{
+    addrinfo ad;
+    memset(&ad, 0, sizeof(ad));
+
+    sockaddr_storage ss;
+
+    if (IsIPv6QuickCheck(ip))
+    {
+        sockaddr_in6 s6;
+        memset(&s6, 0, sizeof(s6));
+        s6.sin6_family = AF_INET6;
+        s6.sin6_port = port;
+        ss = *reinterpret_cast<sockaddr_storage*>(&s6);
+    }
+    else
+    {
+        sockaddr_in s4;
+        memset(&s4, 0, sizeof(s4));
+        s4.sin_family = AF_INET;
+        s4.sin_port = port;
+        ss = *reinterpret_cast<sockaddr_storage*>(&s4);
+    }
+
+    ad.ai_addr = reinterpret_cast<sockaddr*>(&ss);
+    ad.ai_family = ss.ss_family;
+    ad.ai_socktype = ai_socktype;
+
+    addrinfo* result;
+
+    // TODO: Check returned error code 
+    //std::cout<<"Get addrinfo: "<<getaddrinfo(ip.c_str(), std::to_string(sin6.sin6_port).c_str(), &ad, &result)<<"\n";
+    getaddrinfo(ip.c_str(), std::to_string(port).c_str(), &ad, &result);
+
+    return result;
 }

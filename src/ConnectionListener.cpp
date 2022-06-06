@@ -18,10 +18,10 @@ ConnectionListener::ConnectionListener(int port, int ai_socktype): _ad(), _mySoc
     memset(&_ss, 0, sizeof(_ss));
     auto ss = reinterpret_cast<sockaddr_in*>(&_ss);
     ss->sin_family = AF_INET6;
-    inet_pton(AF_INET6, "::1", &(ss->sin_addr.s_addr));
-    //inet_pton(AF_INET, "127.0.0.1", &(ss->sin_addr.s_addr));
     ss->sin_port = htons(port);
     ss->sin_addr.s_addr = htonl(INADDR_ANY);
+    //inet_pton(AF_INET6, "::1", &(ss->sin_addr.s_addr));
+    //inet_pton(AF_INET, "127.0.0.1", &(ss->sin_addr.s_addr));
 
     addrinfo* adList = nullptr;
 

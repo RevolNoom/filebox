@@ -4,8 +4,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>0</x>
-      <y>112</y>
+      <x>56</x>
+      <y>240</y>
       <w>176</w>
       <h>200</h>
     </coordinates>
@@ -29,8 +29,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>424</x>
-      <y>120</y>
+      <x>480</x>
+      <y>248</y>
       <w>168</w>
       <h>184</h>
     </coordinates>
@@ -50,8 +50,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>256</x>
-      <y>1120</y>
+      <x>312</x>
+      <y>1248</y>
       <w>96</w>
       <h>24</h>
     </coordinates>
@@ -61,8 +61,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>72</x>
-      <y>1168</y>
+      <x>128</x>
+      <y>1296</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -72,8 +72,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>464</x>
-      <y>1168</y>
+      <x>520</x>
+      <y>1296</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -83,8 +83,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>144</x>
-      <y>1168</y>
+      <x>200</x>
+      <y>1296</y>
       <w>336</w>
       <h>32</h>
     </coordinates>
@@ -95,8 +95,8 @@ username</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>72</x>
-      <y>1224</y>
+      <x>128</x>
+      <y>1352</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -106,8 +106,8 @@ username</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>464</x>
-      <y>1224</y>
+      <x>520</x>
+      <y>1352</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -117,8 +117,8 @@ username</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>144</x>
-      <y>1224</y>
+      <x>200</x>
+      <y>1352</y>
       <w>336</w>
       <h>32</h>
     </coordinates>
@@ -129,8 +129,8 @@ username</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>72</x>
-      <y>1280</y>
+      <x>128</x>
+      <y>1408</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -140,8 +140,8 @@ username</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>464</x>
-      <y>1280</y>
+      <x>520</x>
+      <y>1408</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -151,8 +151,8 @@ username</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>144</x>
-      <y>1280</y>
+      <x>200</x>
+      <y>1408</y>
       <w>336</w>
       <h>32</h>
     </coordinates>
@@ -163,8 +163,8 @@ username</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>200</x>
-      <y>776</y>
+      <x>256</x>
+      <y>904</y>
       <w>224</w>
       <h>56</h>
     </coordinates>
@@ -178,8 +178,8 @@ username</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>72</x>
-      <y>864</y>
+      <x>128</x>
+      <y>992</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -189,8 +189,8 @@ username</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>488</x>
-      <y>864</y>
+      <x>544</x>
+      <y>992</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -200,8 +200,8 @@ username</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>144</x>
-      <y>864</y>
+      <x>200</x>
+      <y>992</y>
       <w>360</w>
       <h>32</h>
     </coordinates>
@@ -212,8 +212,8 @@ Request Membership Registration</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>72</x>
-      <y>912</y>
+      <x>128</x>
+      <y>1040</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -223,8 +223,8 @@ Request Membership Registration</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>488</x>
-      <y>912</y>
+      <x>544</x>
+      <y>1040</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -234,8 +234,8 @@ Request Membership Registration</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>144</x>
-      <y>912</y>
+      <x>200</x>
+      <y>1040</y>
       <w>360</w>
       <h>32</h>
     </coordinates>
@@ -246,8 +246,8 @@ ACK</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>72</x>
-      <y>960</y>
+      <x>128</x>
+      <y>1088</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -257,8 +257,8 @@ ACK</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>488</x>
-      <y>960</y>
+      <x>544</x>
+      <y>1088</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -268,8 +268,8 @@ ACK</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>144</x>
-      <y>960</y>
+      <x>200</x>
+      <y>1088</y>
       <w>360</w>
       <h>32</h>
     </coordinates>
@@ -280,8 +280,8 @@ ACK</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>72</x>
-      <y>1000</y>
+      <x>128</x>
+      <y>1128</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -291,8 +291,8 @@ ACK</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>488</x>
-      <y>1000</y>
+      <x>544</x>
+      <y>1128</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -302,8 +302,8 @@ ACK</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>144</x>
-      <y>1000</y>
+      <x>200</x>
+      <y>1128</y>
       <w>360</w>
       <h>32</h>
     </coordinates>
@@ -314,8 +314,8 @@ ACK</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>72</x>
-      <y>1040</y>
+      <x>128</x>
+      <y>1168</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -325,8 +325,8 @@ ACK</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>488</x>
-      <y>1040</y>
+      <x>544</x>
+      <y>1168</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -336,8 +336,8 @@ ACK</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>144</x>
-      <y>1040</y>
+      <x>200</x>
+      <y>1168</y>
       <w>360</w>
       <h>32</h>
     </coordinates>
@@ -348,8 +348,8 @@ ACK</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>256</x>
-      <y>1368</y>
+      <x>312</x>
+      <y>1496</y>
       <w>96</w>
       <h>24</h>
     </coordinates>
@@ -359,8 +359,8 @@ ACK</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>72</x>
-      <y>1408</y>
+      <x>128</x>
+      <y>1536</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -370,8 +370,8 @@ ACK</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>464</x>
-      <y>1408</y>
+      <x>520</x>
+      <y>1536</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -381,8 +381,8 @@ ACK</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>144</x>
-      <y>1408</y>
+      <x>200</x>
+      <y>1536</y>
       <w>336</w>
       <h>32</h>
     </coordinates>
@@ -393,8 +393,8 @@ ACK</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>72</x>
-      <y>1464</y>
+      <x>128</x>
+      <y>1592</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -404,8 +404,8 @@ ACK</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>464</x>
-      <y>1464</y>
+      <x>520</x>
+      <y>1592</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -415,8 +415,8 @@ ACK</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>144</x>
-      <y>1464</y>
+      <x>200</x>
+      <y>1592</y>
       <w>336</w>
       <h>40</h>
     </coordinates>
@@ -428,8 +428,8 @@ DirectoryTree otherwise</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>888</x>
-      <y>816</y>
+      <x>944</x>
+      <y>944</y>
       <w>96</w>
       <h>24</h>
     </coordinates>
@@ -439,8 +439,8 @@ DirectoryTree otherwise</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>704</x>
-      <y>856</y>
+      <x>760</x>
+      <y>984</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -450,8 +450,8 @@ DirectoryTree otherwise</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1096</x>
-      <y>856</y>
+      <x>1152</x>
+      <y>984</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -461,8 +461,8 @@ DirectoryTree otherwise</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>776</x>
-      <y>856</y>
+      <x>832</x>
+      <y>984</y>
       <w>336</w>
       <h>32</h>
     </coordinates>
@@ -473,8 +473,8 @@ DirectoryTree otherwise</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>704</x>
-      <y>912</y>
+      <x>760</x>
+      <y>1040</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -484,8 +484,8 @@ DirectoryTree otherwise</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1096</x>
-      <y>912</y>
+      <x>1152</x>
+      <y>1040</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -495,8 +495,8 @@ DirectoryTree otherwise</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>776</x>
-      <y>912</y>
+      <x>832</x>
+      <y>1040</y>
       <w>336</w>
       <h>32</h>
     </coordinates>
@@ -507,8 +507,8 @@ Code (OK/ERROR)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>704</x>
-      <y>960</y>
+      <x>760</x>
+      <y>1088</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -518,8 +518,8 @@ Code (OK/ERROR)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1096</x>
-      <y>960</y>
+      <x>1152</x>
+      <y>1088</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -529,8 +529,8 @@ Code (OK/ERROR)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>776</x>
-      <y>960</y>
+      <x>832</x>
+      <y>1088</y>
       <w>336</w>
       <h>32</h>
     </coordinates>
@@ -541,8 +541,8 @@ Send file (if OK)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>888</x>
-      <y>1080</y>
+      <x>944</x>
+      <y>1208</y>
       <w>96</w>
       <h>24</h>
     </coordinates>
@@ -552,8 +552,8 @@ Send file (if OK)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>704</x>
-      <y>1120</y>
+      <x>760</x>
+      <y>1248</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -563,8 +563,8 @@ Send file (if OK)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1096</x>
-      <y>1120</y>
+      <x>1152</x>
+      <y>1248</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -574,8 +574,8 @@ Send file (if OK)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>776</x>
-      <y>1120</y>
+      <x>832</x>
+      <y>1248</y>
       <w>336</w>
       <h>32</h>
     </coordinates>
@@ -586,8 +586,8 @@ Send file (if OK)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>704</x>
-      <y>1176</y>
+      <x>760</x>
+      <y>1304</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -597,8 +597,8 @@ Send file (if OK)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1096</x>
-      <y>1176</y>
+      <x>1152</x>
+      <y>1304</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -608,8 +608,8 @@ Send file (if OK)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>776</x>
-      <y>1176</y>
+      <x>832</x>
+      <y>1304</y>
       <w>336</w>
       <h>32</h>
     </coordinates>
@@ -620,8 +620,8 @@ Code ERROR or Metadata</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>704</x>
-      <y>1224</y>
+      <x>760</x>
+      <y>1352</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -631,8 +631,8 @@ Code ERROR or Metadata</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1096</x>
-      <y>1224</y>
+      <x>1152</x>
+      <y>1352</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -642,8 +642,8 @@ Code ERROR or Metadata</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>776</x>
-      <y>1224</y>
+      <x>832</x>
+      <y>1352</y>
       <w>336</w>
       <h>40</h>
     </coordinates>
@@ -655,8 +655,8 @@ Code OK otherwise</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>704</x>
-      <y>1264</y>
+      <x>760</x>
+      <y>1392</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -666,8 +666,8 @@ Code OK otherwise</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1096</x>
-      <y>1264</y>
+      <x>1152</x>
+      <y>1392</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -677,8 +677,8 @@ Code OK otherwise</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>776</x>
-      <y>1264</y>
+      <x>832</x>
+      <y>1392</y>
       <w>336</w>
       <h>32</h>
     </coordinates>
@@ -689,8 +689,8 @@ Send file</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>640</x>
-      <y>312</y>
+      <x>696</x>
+      <y>440</y>
       <w>240</w>
       <h>88</h>
     </coordinates>
@@ -707,8 +707,8 @@ tin nhắn gì, thì Server sẽ ngắt kết nối.
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>640</x>
-      <y>184</y>
+      <x>696</x>
+      <y>312</y>
       <w>240</w>
       <h>80</h>
     </coordinates>
@@ -723,8 +723,8 @@ một thread để phục vụ yêu cầu của client.</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1000</x>
-      <y>200</y>
+      <x>1056</x>
+      <y>328</y>
       <w>112</w>
       <h>56</h>
     </coordinates>
@@ -737,8 +737,8 @@ Phục vụ yêu cầu </panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1000</x>
-      <y>264</y>
+      <x>1056</x>
+      <y>392</y>
       <w>112</w>
       <h>56</h>
     </coordinates>
@@ -751,8 +751,8 @@ Phục vụ yêu cầu </panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>960</x>
-      <y>104</y>
+      <x>1016</x>
+      <y>232</y>
       <w>192</w>
       <h>232</h>
     </coordinates>
@@ -768,8 +768,8 @@ vụ xong việc gì</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>872</x>
-      <y>216</y>
+      <x>928</x>
+      <y>344</y>
       <w>144</w>
       <h>24</h>
     </coordinates>
@@ -779,8 +779,8 @@ vụ xong việc gì</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>872</x>
-      <y>232</y>
+      <x>928</x>
+      <y>360</y>
       <w>144</w>
       <h>72</h>
     </coordinates>
