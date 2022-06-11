@@ -48,32 +48,13 @@ update_ls\n
 
 
 
-IV. Client đăng ký tài khoản.
-Sau khi UI đã kiểm tra hai mật khẩu giống nhau, không cần mã hóa tập tin, packet gửi cho server có dạng:
-
-reg tên_người_dùng\nmật khẩu\n
-
-Ví dụ người dùng đăng ký với tên An, mật khẩu abc, thì gói tin client gửi cho server sẽ là:
-
-reg An:abc\n
-
-Server trả về "ok_reg\n" nếu không có lỗi, "no_reg ERROR_CODE\n" nếu có lỗi xảy ra. Ví dụ như trùng tên với người khác.
-
-
-
 V. Client đăng nhập
 Sau khi người dùng nhập tên và mật khẩu vào UI xong, gửi tin cho server dưới dạng plaintext:
 
-log tên_người_dùng:mật khẩu\n
+log tên_người_dùng mật khẩu\n
 
-Ví dụ người dùng đăng nhập với tên An, mật khẩu abc, thì gói tin client gửi cho server sẽ là:
+Ví dụ server hiện thông tin đăng nhập: username An, mật khẩu abc, thì gói tin client gửi cho server sẽ là:
 
 log An:abc\n
 
 Server trả về "ok_log\n" nếu không có lỗi, "no_log ERROR_CODE\n" nếu có lỗi xảy ra.
-
-
-
-VI. Client xóa file
-Client gửi: "del /đường/dẫn/file/trên/server\n"
-Server gửi lại "ok_del\n" nếu thành công. "no_del ERROR_CODE\n" nếu có lỗi (file không tồn tại chẳng hạn)

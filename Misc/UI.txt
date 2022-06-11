@@ -1,37 +1,35 @@
-I. Màn hình chính khi mới bật chương trình
+I. Màn hình chính khi mới bật chương trình (đăng nhập)
+Khi server chạy, server sẽ hiện lên username, password, địa chỉ IP, và port của server.
+Người dùng sẽ phải nhìn những thông tin ấy để đăng nhập
+(Dựa trên CxFileExplorer trên điện thoại Android)
+
 
 << Welcome to Filebox >>
-1. Login
-2. Register
+Connect to host (e.g.: 127.0.0.1): (người dùng nhập địa chỉ server ở đây)
+Port (e.g.: 9999): (người dùng nhập địa chỉ server ở đây)
+Connecting... (Client tìm kiếm server dựa trên host và port)
+
+Nếu tìm kiếm thất bại, client sẽ quay trở về màn hình chính.
+Nếu thành công, client yêu cầu username và mật khẩu:
+
+Username: (nhập username)
+Password: (nhập Password)
+(... client gửi thông tin đi)
+
+Nếu nhập sai, cho nhập lại Username và password 2 lần nữa. Sau 2 lần, quay
+về màn hình chính.
+Nếu thành công, chuyển sang màn hình sau khi đăng nhập
 
 
-II. Đăng ký (Register):
+II. Sau khi đăng nhập:
 
-<< Enter your informations >>
-Username: abc123
-Password: ******
-Re-type Password: ******
-
-
-
-II.1. Đăng nhập (login):
-
-<< Enter your credentials >>
-Username: abc123
-Password: ******
-
-
-
-III. Sau khi đăng nhập:
-
-<< Hello, username >>
 Type "-h" to show available commands.
 Type "-h command" to get detailed command usage.
 username:/working/directory$ [người dùng nhập lệnh, tương tác từ đây như python]
 
 
 
-IV. Nhập lệnh ls:
+III. Nhập lệnh ls:
 
 username:/working/directory$ ls
 File1
@@ -41,14 +39,14 @@ File4
 
 
 
-V. Nhập lệnh cd:
+IV. Nhập lệnh cd:
 
 username:/current/working$ cd directory
 username:/current/working/directory$ [Chuyển người dùng sang thư mục mới, đợi lệnh tiếp]
 
 
 
-VI. Upload:
+V. Upload:
 upload /đường/dẫn/đến/file/trên/máy/người/dùng /đường/dẫn/đến/vị/trí/upload/lên/server
 
 username:/working/directory$ upload "C:\\File" /working/directory
@@ -65,7 +63,3 @@ username:/working/directory$ download /working/directory/file "C:\\"
 Downloading... (Có thể làm thêm thanh tiến độ như trên)
 Done.
 username:/working/directory$ 
-
-
-VII. Xóa File
-delete /đường/dẫn/đến/tệp/trên/server
