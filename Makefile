@@ -1,12 +1,11 @@
 HEADER_PATH=header
-SRC_PATH=src
-CORE_PACKAGE=$(SRC_PATH)/Filesystem.cpp $(SRC_PATH)/Connection.cpp $(SRC_PATH)/ConnectionListener.cpp $(SRC_PATH)/main.cpp
 
-CLIENT_DEPENDENCY=$(CORE_PACKAGE) client/client.cpp
-SERVER_DEPENDENCY=$(CORE_PACKAGE) server/server.cpp
+SRC_COMMON = $(shell find src/*.cpp)
+SRC_SERVER = $(shell find server/*.cpp)
+SRC_CLIENT = $(shell find client/*.cpp)
 
 target: 
-	g++ $(CLIENT_DEPENDENCY) -I$(HEADER_PATH) -o clientFTP
-	g++ $(SERVER_DEPENDENCY) -I$(HEADER_PATH) -o serverFTP
+	g++ ${SRC_COMMON} ${SRC_SERVER} -I$(HEADER_PATH) -o clientFTP
+	g++ ${SRC_COMMON} ${SRC_CLIENT} -I$(HEADER_PATH) -o serverFTP
 	echo Done
        
