@@ -31,11 +31,11 @@ public:
     using PORT=int;
     std::pair<IP, PORT> GetListenerInfo();
 
+    Authenticator(ServerFTP* employer);
 
 private:
 
     friend class ServerFTP;
-    Authenticator(ServerFTP* employer);
     Credential GenerateCredential();
 
     void ListenNewUsers() ON_THREAD;

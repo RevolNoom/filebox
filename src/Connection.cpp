@@ -47,7 +47,7 @@ Connection::Connection(int acceptedSocket, sockaddr_storage sockInfo, int sockTy
         ThrowErrnoMsg("Connection failed to create new socket: ");
     }
 
-    std::cout<<"Connection new socket: "<<_sock<<"\n";
+    //std::cout<<"Connection new socket: "<<_sock<<"\n";
 }
 
 Connection::~Connection()

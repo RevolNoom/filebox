@@ -3,9 +3,9 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 #include "mysocket.hpp"
-#include <memory>
 
 
 class Connection;
@@ -37,11 +37,12 @@ public:
     // Stop listening for new connections
     void Close();
 
+    // TODO:
+    // Return the list of IP addresses of all routers 
+    // that this ConnectionListener connects to
+    std::vector<std::string> GetIPAddresses();
 
 private:
-    // getaddrinfo() results
-    // addrinfo* _adList;
-
     addrinfo _ad;
     sockaddr_storage _ss; 
 

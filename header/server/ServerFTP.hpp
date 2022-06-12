@@ -16,6 +16,9 @@
 class ServerFTP
 {
 public:
+
+    static constexpr int PORT = 9999;
+
     ServerFTP();
     ~ServerFTP();
 

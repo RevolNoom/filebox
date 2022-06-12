@@ -16,10 +16,10 @@ ConnectionListener::ConnectionListener(int port, int ai_socktype): _ad(), _mySoc
     _ad.ai_addr = reinterpret_cast<sockaddr*>(&_ss);
     
     memset(&_ss, 0, sizeof(_ss));
-    auto ss = reinterpret_cast<sockaddr_in*>(&_ss);
-    ss->sin_family = AF_INET6;
-    ss->sin_port = htons(port);
-    ss->sin_addr.s_addr = htonl(INADDR_ANY);
+    auto ss = reinterpret_cast<sockaddr_in6*>(&_ss);
+    ss->sin6_family = AF_INET6;
+    ss->sin6_port = htons(port);
+    //ss->sin6_addr = htonl(INADDR_ANY); ?? It worked in IPv4, now it does not.
     //inet_pton(AF_INET6, "::1", &(ss->sin_addr.s_addr));
     //inet_pton(AF_INET, "127.0.0.1", &(ss->sin_addr.s_addr));
 
@@ -56,6 +56,11 @@ ConnectionListener::ConnectionListener(int port, int ai_socktype): _ad(), _mySoc
 ConnectionListener::~ConnectionListener()
 {
     Close();
+}
+
+int ConnectionListener::GetPort()
+{
+    return reinterpret_cast<sockaddr_in6*>(&_ss)->sin6_port;
 }
 
 void ConnectionListener::Listen()
