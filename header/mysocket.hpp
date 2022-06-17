@@ -33,4 +33,10 @@
 
 #endif /*_WIN32*/
 
+
+// Macro for readability
+#ifndef ON_THREAD
+#define ON_THREAD
+#endif
+
 #endif /* MYSOCKET_HPP */

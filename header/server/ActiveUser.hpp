@@ -11,24 +11,19 @@
 
 class Connection;
 
+// Intended to bind Username and a connection...
+// We'll see about that
 class ActiveUser
 {
 public:
     ActiveUser(std::shared_ptr<Connection> connection);
 
-    // Update the list of this user's command 
-    void UpdateCommand() ON_THREAD;
-
-    // True if GetCommand() will return something
-    bool HasCommand() const;
-
     // Consume one command from user's list.
-    const std::string& GetCommand();
+    std::string GetCommand();
 
     // void ReceiveAnswer(const std::string& ans);
     
 private:
-    std::deque<std::string> _commandQueue;
     std::shared_ptr<Connection> _connection;
 };
 

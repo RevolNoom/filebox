@@ -24,4 +24,6 @@ void ServerFTP::AcceptNewUser(const ActiveUser& user)
 void ServerFTP::Start()
 {
     _auth.Start();
+    while (true)
+        sleep(1);
 }

@@ -3,7 +3,7 @@
 
 #include <string>
 #include <thread>
-#include <vector>
+#include <list>
 #include "ConnectionListener.hpp"
 
 class ServerFTP;
@@ -45,7 +45,7 @@ private:
 private:
     ConnectionListener _listener;
 
-    std::vector<std::shared_ptr<Connection>> _pendingConnection;
+    std::list<std::shared_ptr<Connection>> _pendingConnection;
 
     // The one who inited this Authenticator
     ServerFTP* _employer;

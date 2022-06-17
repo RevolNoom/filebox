@@ -2,9 +2,10 @@
 
 void CommandResolver::Resolve(ActiveUser& user)
 {
-    while (user.HasCommand())
+    std::string command;
+    while ((command = user.GetCommand()) != "")
     {
-        _cmdQueue.push_back({user, user.GetCommand()});
+        _cmdQueue.push_back({user, command});
     }
 }
 

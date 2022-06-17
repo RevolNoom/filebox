@@ -8,7 +8,8 @@ void ThrowErrnoMsg(const std::string &msg)
 }
 
 // Try to connect to ip:port destination
-Connection::Connection(const std::string &ip, int port, int ai_socktype): _sockType(ai_socktype)
+Connection::Connection(const std::string &ip, int port, int ai_socktype): 
+    _sockType(ai_socktype)
 {
     auto result = GetAddrInfo(ip, port, ai_socktype);
 
@@ -55,55 +56,52 @@ Connection::~Connection()
     close(_sock);
 }
 
+
+// A packet has the following format:
+// [byte-size] message ...
 void Connection::Send(const std::string& message)
 {
-    long long messageSize = message.length()*sizeof(message[0]);
-    long long sentSize(0);
+    Int64ToRawBytes messageSize;
+    messageSize._int = message.length();
 
-    std::string_view s(message);
+    // The actual sent message is appended to the head with packet size
+    std::string sendmsg = std::string(messageSize._str, MESSAGE_HEADER_SIZE) + message;
 
-    while (sentSize < messageSize)
+    //std::cout<<"Sending message "<<messageSize._int<<" chars: "<<message<<"\n";
+
+    std::string_view s(sendmsg);
+
+    while (s.length() > 0)
     {
-        int packetSize = std::min(s.size(), MAX_BUFFER_SIZE);
-        int bytes_sent = send(_sock, s.begin(), packetSize , 0);
+        int packetSize = std::min(s.length(), MAX_BUFFER_SIZE-1);
+        int bytes_sent = send(_sock, s.begin(), packetSize, 0);
+        //std::cout<<"Bytes sent: "<<bytes_sent<<"\n";
         if (bytes_sent == -1)
         {
             ThrowErrnoMsg("Connection failed to send message: ");
         }
 
-        sentSize += bytes_sent;
-        s.substr(bytes_sent);
+        s.remove_prefix(bytes_sent);
     }
 }
 
 std::string Connection::Receive()
 {
-    std::string msg("");
-
     char recvBuffer[MAX_BUFFER_SIZE];
 
-    constexpr bool ThereIsStillMessageLeftover = true;
-    int bytes_read = recv(_sock, recvBuffer, MAX_BUFFER_SIZE, 0);
+    int bytes_read = recv(_sock, recvBuffer, MAX_BUFFER_SIZE-1, 0);
     if (bytes_read == -1)
-    {
-        throw std::runtime_error(std::string("Connection failed to receive message because of: ") + std::string(strerror(errno)));
-    }
+        ThrowErrnoMsg("Connection failed to receive message because of: ");
 
-    // Cut off the string
-    recvBuffer[bytes_read] = '\0';
+    // TODO: Close Connection
+    if (bytes_read == 0)
+        return "";
 
-    msg += std::string(recvBuffer);
+    _recvBuffer.Write(recvBuffer, bytes_read);
 
-    /*
-    while (ThereIsStillMessageLeftover)
-    {
-        if (bytes_read == 0)
-            break;
-    }
-    */
-
-    return msg;
+    return _recvBuffer.GetMessage();
 }
+
 
 std::string Connection::GetRemoteIP() const
 {
@@ -170,6 +168,53 @@ addrinfo* Connection::GetAddrInfo(const std::string &ip, int port, int ai_sockty
     // TODO: Check returned error code 
     //std::cout<<"Get addrinfo: "<<getaddrinfo(ip.c_str(), std::to_string(sin6.sin6_port).c_str(), &ad, &result)<<"\n";
     getaddrinfo(ip.c_str(), std::to_string(port).c_str(), &ad, &result);
+
+    return result;
+}
+
+
+void Connection::Buffer::Write(const char* src, int count)
+{
+    for (int iii=0; iii<count; ++iii)
+        _recvBuffer.push_back(src[iii]);
+}
+
+
+std::string Connection::Buffer::GetMessage()
+{
+    // Avoid reading out-of-range stream
+    if (_recvBuffer.size() < MESSAGE_HEADER_SIZE)
+        return "";
+
+    Int64ToRawBytes sizeStamp;
+    strncpy(sizeStamp._str, GetFront(MESSAGE_HEADER_SIZE).c_str(), MESSAGE_HEADER_SIZE);
+
+    if (sizeStamp._int > _recvBuffer.size())
+    {
+        WriteFront(sizeStamp._str, MESSAGE_HEADER_SIZE);
+        return "";
+    }
+
+    return GetFront(sizeStamp._int);
+}
+
+void Connection::Buffer::WriteFront(const char* src, int count)
+{
+    while (count-- >= 0)
+        _recvBuffer.push_front(src[count]);
+}
+
+
+std::string Connection::Buffer::GetFront(int count)
+{
+    std::string result;
+    result.reserve(count);
+
+    for (int iii = 0; iii<count; ++iii)
+    {
+        result+=_recvBuffer.front();
+        _recvBuffer.pop_front();
+    }
 
     return result;
 }
