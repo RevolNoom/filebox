@@ -4,15 +4,12 @@
 #include <deque>
 #include <memory>
 #include <string>
-
-#ifndef ON_THREAD
-#define ON_THREAD
-#endif
+#include "mysocket.hpp"
 
 class Connection;
 
-// Intended to bind Username and a connection...
-// We'll see about that
+// TODO: This is a wrapper for Connection
+// Is it necessary???
 class ActiveUser
 {
 public:
@@ -21,7 +18,7 @@ public:
     // Consume one command from user's list.
     std::string GetCommand();
 
-    // void ReceiveAnswer(const std::string& ans);
+    void ReceiveAnswer(const std::string& ans);
     
 private:
     std::shared_ptr<Connection> _connection;

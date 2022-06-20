@@ -58,8 +58,7 @@ void Authenticator::Authenticate()
     while (_alive)
     {
         for (auto it_connection = _pendingConnection.begin();
-            it_connection != _pendingConnection.end();
-            ++it_connection)
+            it_connection != _pendingConnection.end();)
         {
             auto connection = *it_connection;
             auto credential = connection->Receive(); 
@@ -69,11 +68,17 @@ void Authenticator::Authenticate()
                 {
                     connection->Send("ok_log\n");
                     _employer->AcceptNewUser(ActiveUser(connection));
-                    _pendingConnection.erase(it_connection);
+                    auto temp = it_connection++;
+                    _pendingConnection.erase(temp);
+                    continue;
                 }
                 else 
                     connection->Send("no_log WRONG_CREDENTIAL\n");
             }
+
+            // Iterator increment is put here
+            // to skip cases when I need to erase connections.
+            ++it_connection;
         }
     }    
 }

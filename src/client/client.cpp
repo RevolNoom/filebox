@@ -6,7 +6,9 @@
 int Main(int argc, char *argv[])
 {
     Connection c("::1", ServerFTP::PORT, SOCK_STREAM);
-    c.Send("log abcd:123\n");
+    c.Send("log abcd:1234\n");
+    std::cout<<"Server sends back: \""<<c.Receive()<<"\"\n";
+    c.Send("ls 123\n");
     std::cout<<"Server sends back: \""<<c.Receive()<<"\"\n";
 
     return 0;

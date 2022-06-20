@@ -8,10 +8,6 @@
 
 class ServerFTP;
 
-#ifndef ON_THREAD
-#define ON_THREAD
-#endif
-
 // Authenticate new connections
 class Authenticator
 {

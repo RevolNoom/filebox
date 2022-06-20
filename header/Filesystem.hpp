@@ -20,8 +20,6 @@ public:
 
     // Return the paths to all the files and empty directories in this filesystem 
     // Each path is separated by a newline "\n"
-    // If @absolutePath = true, return absolute paths instead of relative path from
-    // this filesystem root
     std::string GetRecursiveFileList(bool absolutePath = false);
 
 private:

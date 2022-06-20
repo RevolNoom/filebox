@@ -14,7 +14,6 @@ ServerFTP::~ServerFTP()
 
 }
 
-
 void ServerFTP::AcceptNewUser(const ActiveUser& user)
 {
     _users.push_back(user);
@@ -25,5 +24,8 @@ void ServerFTP::Start()
 {
     _auth.Start();
     while (true)
-        sleep(1);
+        for (auto it = _users.begin(); it != _users.end(); ++it)
+        {
+            _cmdr.Resolve(*it);
+        }
 }

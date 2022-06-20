@@ -11,4 +11,8 @@ std::string ActiveUser::GetCommand()
     return _connection->Receive();
 }
 
-// void ReceiveAnswer(const std::string& ans);
+void ActiveUser::ReceiveAnswer(const std::string& ans)
+{
+    _connection->Send(ans);
+
+}

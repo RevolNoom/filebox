@@ -1,12 +1,8 @@
 #ifndef SERVER_FTP
 #define SERVER_FTP
 
-#ifndef ON_THREAD
-#define ON_THREAD
-#endif
-
 #include <thread>
-#include <deque>
+#include <list>
 
 #include "mysocket.hpp"
 #include "ConnectionListener.hpp"
@@ -30,9 +26,7 @@ private:
 
 private: 
 
-    void UpdateUserCommands() ON_THREAD;
-
-    void ResolveCommands() ON_THREAD;
+    //void ResolveCommands() ON_THREAD;
 
 private:
     CommandResolver _cmdr;
@@ -40,7 +34,7 @@ private:
 
     // TODO: There has to be some ways to supervise
     // dropped connections.
-    std::vector<ActiveUser> _users;
+    std::list<ActiveUser> _users;
 
 };
 
