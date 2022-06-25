@@ -2,6 +2,11 @@
 #include <fstream>
 #include <algorithm>
 #include <stdexcept>
+#include <iostream>
+
+// For ThrowErrMsg. 
+// Should I put ThrowErrMsg in a separate header???
+#include "Connection.hpp"
 
 #ifdef _WIN32
     #include <Windows.h>
@@ -9,72 +14,149 @@
     #include <unistd.h>
 #endif
 
+
+
 // I won't do Abstract Factory. Not yet. 
 // There's too little differences currently to bother doing it
 // Implementation: https://stackoverflow.com/questions/143174/how-do-i-get-the-directory-that-a-program-is-running-from
-Filesystem::Filesystem()
+Filesystem::Filesystem(): Filesystem(std::filesystem::current_path())
 {
-    char pBuf[256];
-    size_t len = sizeof(pBuf); 
-#ifdef _WIN32
-    int bytes = GetModuleFileName(NULL, pBuf, len);
-    return bytes ? bytes : -1;{
-#else
-    int bytes = std::min<int>(readlink("/proc/self/exe", pBuf, len), len - 1);
-    if(bytes >= 0)
-        pBuf[bytes] = '\0';
-#endif
-    _rootDirectory = std::filesystem::path(std::string(pBuf)).remove_filename();
-    if (!std::filesystem::exists(_rootDirectory))
-        throw std::invalid_argument(std::string("Root directory ") + _rootDirectory.string() + " does not exist!");
 }
 
 
 Filesystem::Filesystem(const std::string& rootDirectory):
     _rootDirectory(rootDirectory)
 { 
+    //std::cout<<"Filesystem initialized at root path: "<<_rootDirectory<<"\n";
     if (!std::filesystem::exists(_rootDirectory))
         throw std::invalid_argument(std::string("Root directory ") + _rootDirectory.string() + " does not exist!");
 }
 
 File Filesystem::GetFile(const std::string& filePath)
 {
-    return File(filePath);
+    //TODO
+    std::filesystem::path p(filePath);
+    if (p.is_absolute())
+        return File(_rootDirectory.string() + "/" + filePath);
+    return File(prwd() + "/" + filePath);
 }
 
-std::string Filesystem::GetRecursiveFileList(bool absolutePath)
+
+/*
+std::string perms(std::filesystem::perms p)
+{
+    std::stringstream perm;
+    perm << ((p & std::filesystem::perms::owner_read) != std::filesystem::perms::none ? "r" : "-")
+              << ((p & std::filesystem::perms::owner_write) != std::filesystem::perms::none ? "w" : "-")
+              << ((p & std::filesystem::perms::owner_exec) != std::filesystem::perms::none ? "x" : "-")
+              << ((p & std::filesystem::perms::group_read) != std::filesystem::perms::none ? "r" : "-")
+              << ((p & std::filesystem::perms::group_write) != std::filesystem::perms::none ? "w" : "-")
+              << ((p & std::filesystem::perms::group_exec) != std::filesystem::perms::none ? "x" : "-")
+              << ((p & std::filesystem::perms::others_read) != std::filesystem::perms::none ? "r" : "-")
+              << ((p & std::filesystem::perms::others_write) != std::filesystem::perms::none ? "w" : "-")
+              << ((p & std::filesystem::perms::others_exec) != std::filesystem::perms::none ? "x" : "-");
+    return perm.str();
+}*/
+
+void Filesystem::cd(const std::string& path)
+{
+    std::filesystem::path cwd(prwd());
+    cwd.append(path);
+
+    if (!std::filesystem::is_directory(cwd.string()))
+    {
+        ThrowErrnoMsg(std::string("Not a directory: ") + cwd.string() + ". ");
+    }
+    
+    _cwd.assign(cwd.string().substr(prwd().length() - 1));
+    //std::cout<<"After cd: "<<_cwd<<"\n";
+}
+
+std::string Filesystem::pwd()
+{
+    return _cwd.string() + (_cwd.string().back() == '/' ? "" : "/");
+}
+
+std::string Filesystem::prwd()
+{
+    return _rootDirectory.string() + pwd();
+}
+
+std::string Filesystem::ls(const std::string& path, bool recursive, bool absolute)
 {
     std::string result("");
 
-    std::filesystem::recursive_directory_iterator rdi(_rootDirectory);
+    // TODO: Maybe, just maybe, I want to refactor a ResolvePath()?
+    std::filesystem::path lsPath(prwd() + path);
 
+    //std::cout<<"ls-ing at: "<<lsPath<<"\n";
 
-    // Recursively iterate this filesystem, looking for files and empty directories.
-    for (auto &r: rdi)
+    if (recursive)
     {
-        std::string appendToResult("");
+        std::filesystem::recursive_directory_iterator rdi(lsPath);
 
-        std::string path(r.path().string());
-        if (!absolutePath)
-            path = path.substr(_rootDirectory.string().length());
-
-        if (r.is_regular_file())
-            appendToResult = path + std::string("\n");
-        else if (r.is_directory())
+        // Recursively iterate this filesystem, looking for files and empty directories.
+        for (auto &r: rdi)
         {
-            bool directoryEmpty = std::filesystem::begin(std::filesystem::directory_iterator(r)) == std::filesystem::directory_iterator();
-            if (directoryEmpty)
-                appendToResult = path + std::string("/\n");
+            //std::cout<<"At: "<<r.path().string()<<". Perm: "<<perms(r.status().permissions())<<"\n";
+            // TODO: Check for user's privileges. They might be SU!
+            if ((r.status().permissions() & std::filesystem::perms::others_read) == std::filesystem::perms::none)
+            {
+                rdi.disable_recursion_pending();
+                continue;
+            }
+            std::string appendToResult("");
+
+            std::filesystem::path path(r.path().string());
+
+            path.assign(path.string().substr(lsPath.string().length() + 1));
+
+            // TODO: Refactor this?
+            if (r.is_regular_file())
+                appendToResult = path.string() + std::string("\n");
+            else if (r.is_directory())
+            {
+                // Only append empty directories
+                bool directoryEmpty = std::filesystem::begin(std::filesystem::directory_iterator(r)) == std::filesystem::directory_iterator();
+                if (directoryEmpty)
+                    appendToResult = path.string() + std::string("/\n");
+            }
+
+            result += appendToResult;
+        }
+    }
+    else
+    {
+        std::filesystem::directory_iterator di(lsPath);
+        for (auto &r: di)
+        {
+            if ((r.status().permissions() & std::filesystem::perms::others_read) == std::filesystem::perms::none)
+                continue;
+
+            std::string appendToResult("");
+
+            std::filesystem::path path(r.path().string());
+
+            path.assign(path.filename());
+            
+            if (r.is_regular_file())
+                appendToResult = path.string() + std::string("\n");
+            else if (r.is_directory())
+            {
+                // Only append empty directories
+                bool directoryEmpty = std::filesystem::begin(std::filesystem::directory_iterator(r)) == std::filesystem::directory_iterator();
+                if (directoryEmpty)
+                    appendToResult = path.string() + std::string("/\n");
+            }
+
+            result += appendToResult;
         }
 
-        result += appendToResult;
     }
+
 
     return result;
 }
-
-
-
 
 File::File(const std::string& filePath): _path(filePath)
 {

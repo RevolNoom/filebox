@@ -18,12 +18,29 @@ public:
  
     File GetFile(const std::string& filePath);
 
-    // Return the paths to all the files and empty directories in this filesystem 
-    // Each path is separated by a newline "\n"
-    std::string GetRecursiveFileList(bool absolutePath = false);
+    // void CreateFile(const std::string& filePath, const std::string& content = "");
+
+    // Return the file names and directories at @path
+    // Directory path ends with "/"
+    // @path can be absolute or relative. Default to current directory
+    // @absolute=true returns the absolute path from _rootDirectory.
+    // (Only list the files that your executable has permission to Read)
+    std::string ls(const std::string& path = "", bool recursive = false, bool absolute = false);
+
+    void cd(const std::string& path);
+
+    std::string pwd();
+
+private:
+    // Print Real Working Directory. 
+    // I know. I'm a genius at making up names
+    // Returns working directory from the system root ("/")
+    std::string prwd();
+
 
 private:
     std::filesystem::path _rootDirectory;
+    std::filesystem::path _cwd;
 };
 
 class File

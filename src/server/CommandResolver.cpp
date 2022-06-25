@@ -51,7 +51,7 @@ void CommandResolver::SendFile(CommandResolver::Command &C)
 void CommandResolver::SendFilesystemTree(CommandResolver::Command &C)
 {
     // TODO: Currently ignoring timestamp
-    C.first.ReceiveAnswer("update_ls " + _serverFs.GetRecursiveFileList());
+    C.first.ReceiveAnswer("update_ls " + _serverFs.ls("/"));
 }
 
 void CommandResolver::ReceiveFile(CommandResolver::Command &C)
