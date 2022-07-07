@@ -3,8 +3,8 @@
 
 #include <list>
 #include <thread>
-#include "ActiveUser.hpp"
 #include "Filesystem.hpp"
+#include "ActiveUser.hpp"
 
 // Serve client commands
 class CommandResolver
@@ -20,14 +20,19 @@ private:
 
     void ConsumeCommands() ON_THREAD;
 
+    // Change user's working directory 
+    void cd(CommandResolver::Command &C);
+
     // Send file to user when they request download
     void SendFile(CommandResolver::Command &C);
 
     // Send filesystem when they request ls
-    void SendFilesystemTree(CommandResolver::Command &C);
+    void ls(CommandResolver::Command &C);
 
     // Receive file from user when they request upload
     void ReceiveFile(CommandResolver::Command &C);
+
+    void commandNotFound(CommandResolver::Command &C);
 
 private:
     // int _maxWorkerThread;
@@ -36,7 +41,6 @@ private:
     std::thread _consumeCommands;
 
     std::list<Command> _cmdQueue;
-    Filesystem _serverFs;
 };
 
 #endif

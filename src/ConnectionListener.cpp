@@ -2,7 +2,10 @@
 #include "Connection.hpp"
 #include <iostream>
 
-ConnectionListener::ConnectionListener(int port, int ai_socktype): _ad(), _mySock()
+ConnectionListener::ConnectionListener(int port, int ai_socktype): 
+    _ad(), 
+    _mySock(),
+    _closed(false)
 {
     memset(&_ad, 0, sizeof(_ad));
 
@@ -11,12 +14,12 @@ ConnectionListener::ConnectionListener(int port, int ai_socktype): _ad(), _mySoc
     _ad.ai_addrlen = INET6_ADDRSTRLEN;
     _ad.ai_family = AF_INET6;
     _ad.ai_socktype=ai_socktype;
-    _ad.ai_flags = AI_PASSIVE;
     _ad.ai_protocol=serviceProviderChooseProtocolForMe;
     _ad.ai_addr = reinterpret_cast<sockaddr*>(&_ss);
     
     memset(&_ss, 0, sizeof(_ss));
     auto ss = reinterpret_cast<sockaddr_in6*>(&_ss);
+    ss->sin6_addr = in6addr_any;
     ss->sin6_family = AF_INET6;
     ss->sin6_port = htons(port);
     //ss->sin6_addr = htonl(INADDR_ANY); ?? It worked in IPv4, now it does not.
@@ -42,8 +45,6 @@ ConnectionListener::ConnectionListener(int port, int ai_socktype): _ad(), _mySoc
 
     if (_mySock == -1)
         ThrowErrnoMsg("ConnectionListener failed to create a socket: ");
-
-    _closed = false;
     
     status = bind(_mySock, adList->ai_addr, adList->ai_addrlen);
 
@@ -93,10 +94,6 @@ void ConnectionListener::Close()
     if (!_closed)
     {
         _closed = true;
-        #ifdef _WIN32
-            closesocket(_mySock);
-        #else
-            close(_mySock);
-        #endif
+        close(_mySock);
     }
 }

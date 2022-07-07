@@ -5,8 +5,8 @@
 #include <memory>
 #include <string>
 #include "mysocket.hpp"
-
-class Connection;
+#include "Filesystem.hpp"
+#include "Connection.hpp"
 
 // TODO: This is a wrapper for Connection
 // Is it necessary???
@@ -18,10 +18,16 @@ public:
     // Consume one command from user's list.
     std::string GetCommand();
 
+    // This is not good. I'm not supposed to expose
+    // _connection like this
+    std::shared_ptr<Connection> GetConnection();
+
+    Filesystem& GetFileSystem();
     void ReceiveAnswer(const std::string& ans);
     
 private:
     std::shared_ptr<Connection> _connection;
+    Filesystem _fs;
 };
 
 #endif

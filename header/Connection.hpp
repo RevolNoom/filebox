@@ -28,7 +28,7 @@ public:
     // TODO: Convert size header according to endian-ness 
     void Send(const std::string& message);
 
-    std::string Receive();
+    std::string Receive(bool blocking = false);
 
     std::string GetRemoteIP() const;
 

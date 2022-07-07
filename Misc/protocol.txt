@@ -11,9 +11,8 @@ Ghi chú:
 I. Client upload lên server
 Client gửi: "up /thư_mục_đến/trên_server/ METADATA\n"
 Server gửi: "ok_up\n" nếu không có lỗi. "no_up ERROR_CODE\n" nếu có lỗi xảy ra
-Client bắt đầu truyền tệp.
+Client bắt đầu truyền tệp: 
 Server dừng tiếp nhận thêm gói tin khi đã nhận đủ kích thước theo metadata
-
 
 
 II. Client download từ server
@@ -27,24 +26,8 @@ Client dừng tiếp nhận thêm gói tin khi đã nhận đủ kích thước 
 
 III. Client nhập lệnh ls:
 Màn hình hiện lên danh sách tệp tin cũ
-Song song với đó, client gửi: "ls thời_gian_hiện_tại\n"
-Server gửi "ok_ls\n" nếu hệ thống tập tin chưa thay đổi từ lúc client gửi
-Server gửi lại cây hệ thống tập tin nếu cây hệ thống tập tin đã thay đổi trước thời_gian_hiện_tại.
-Giả sử Cây hệ thống tập tin trên server đang như này:
-/
-|_ dir1
-|_ dir2
-   |_ file2
-|_ file1
-
-Thì tin nhắn server gửi về sẽ như sau:
-update_ls file1 dir1/ dir2/file2\n 
-Có thể gửi theo thứ tự khác nhau. Ví dụ như "update_ls  dir1/ dir2/file2 file1\n". Miễn là in đầy đủ
-đường dẫn tuyệt đối của file.
-
-Lưu ý: Nếu cây hệ thống tập tin hiu quạnh chả có file, thư mục nào, thì tin nhắn gửi về chỉ vỏn vẹn:
-
-update_ls\n
+Song song với đó, client gửi: "ls <absolute_path>\n"
+Server gửi "ok_ls file1 file2 file3\n"
 
 
 
@@ -58,3 +41,8 @@ Ví dụ server hiện thông tin đăng nhập: username An, mật khẩu abc, 
 log An:abc\n
 
 Server trả về "ok_log\n" nếu không có lỗi, "no_log ERROR_CODE\n" nếu có lỗi xảy ra.
+
+
+VI. Client cd vào thư mục:
+Client gửi: "cd <path>\n"
+Server gửi: "ok_cd\n" nếu không có lỗi. "no_cd ERROR_CODE\n" nếu có lỗi xảy ra

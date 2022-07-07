@@ -3,15 +3,14 @@
 #include "ServerFTP.hpp"
 #include "Connection.hpp"
 
-int Main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-    Filesystem f;
-    std::cout<<">>>ls src:\n"<<f.ls("src", true, true);
-    /*
     std::cout<<"Booting server\n";
     ServerFTP s;
-
     s.Start();
+    /*
+    Filesystem f;
+    std::cout<<f.ls("/Misc")<<"\n";
     */
 
     //std::cout<<"Connecting\n";

@@ -85,21 +85,30 @@ void Connection::Send(const std::string& message)
     }
 }
 
-std::string Connection::Receive()
+std::string Connection::Receive(bool blocking)
 {
     char recvBuffer[MAX_BUFFER_SIZE];
 
-    int bytes_read = recv(_sock, recvBuffer, MAX_BUFFER_SIZE-1, 0);
-    if (bytes_read == -1)
-        ThrowErrnoMsg("Connection failed to receive message because of: ");
+    do
+    {
+        int bytes_read = recv(_sock, recvBuffer, MAX_BUFFER_SIZE-1, 0);
+        if (bytes_read == -1)
+            ThrowErrnoMsg("Connection failed to receive message because of: ");
 
-    // TODO: Close Connection
-    if (bytes_read == 0)
-        return "";
+        // TODO: Close Connection
+        if (bytes_read == 0)
+            return "";
 
-    _recvBuffer.Write(recvBuffer, bytes_read);
+        _recvBuffer.Write(recvBuffer, bytes_read);
 
-    return _recvBuffer.GetMessage();
+        auto msg = _recvBuffer.GetMessage();
+
+        if (msg != "")
+            return msg;
+    }
+    while (blocking);
+
+    return ""; // Suppress warning messages
 }
 
 

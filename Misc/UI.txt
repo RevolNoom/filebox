@@ -16,15 +16,12 @@ Username: (nhập username)
 Password: (nhập Password)
 (... client gửi thông tin đi)
 
-Nếu nhập sai, cho nhập lại Username và password 2 lần nữa. Sau 2 lần, quay
-về màn hình chính.
 Nếu thành công, chuyển sang màn hình sau khi đăng nhập
 
 
 II. Sau khi đăng nhập:
 
 Type "-h" to show available commands.
-Type "-h command" to get detailed command usage.
 username:/working/directory$ [người dùng nhập lệnh, tương tác từ đây như python]
 
 

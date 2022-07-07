@@ -25,18 +25,22 @@ public:
     // @path can be absolute or relative. Default to current directory
     // @absolute=true returns the absolute path from _rootDirectory.
     // (Only list the files that your executable has permission to Read)
-    std::string ls(const std::string& path = "", bool recursive = false, bool absolute = false);
+    std::string ls(const std::string& path = "", bool absolute = false);
 
     void cd(const std::string& path);
 
-    std::string pwd();
+    std::filesystem::path pwd();
 
 private:
     // Print Real Working Directory. 
     // I know. I'm a genius at making up names
     // Returns working directory from the system root ("/")
-    std::string prwd();
+    std::filesystem::path prwd();
 
+    bool CanRead(const std::filesystem::path &p);
+    bool CanWrite(const std::filesystem::path &p);
+
+    bool CanHelper(const std::filesystem::path &p, int read_or_write_test_macro);
 
 private:
     std::filesystem::path _rootDirectory;

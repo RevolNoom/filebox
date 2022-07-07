@@ -28,7 +28,7 @@ Authenticator::~Authenticator()
 
 Authenticator::Credential Authenticator::GenerateCredential()
 {
-    return {"abcd", "1234"};
+    return {"a", "1"};
 }
 
 const Authenticator::Credential& Authenticator::GetCredential()
