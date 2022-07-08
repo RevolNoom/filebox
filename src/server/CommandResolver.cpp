@@ -79,6 +79,12 @@ void CommandResolver::ReceiveFile(CommandResolver::Command &C)
     std::filesystem::path destinationPath(C.second.substr(C.second.find_first_of(' ')+1));
     destinationPath.assign(destinationPath.string().substr(0, destinationPath.string().find_last_of(' ')));
 
+    std::cout<<"Uploading to Destination path: "<<destinationPath<<"\n";
+    if (!C.first.GetFileSystem().CanWrite(destinationPath))
+    {
+        C.first.ReceiveAnswer("no_up PERMISSION_DENIED\n");
+    }
+
 
     // See if there's any files with same name or not
     destinationPath /= filename.string();
@@ -90,7 +96,7 @@ void CommandResolver::ReceiveFile(CommandResolver::Command &C)
     }
 
     C.first.GetConnection()->Send("ok_up\n");
-    std::fstream newFile(destinationPath.string());
+    std::ofstream newFile(destinationPath.string());
     std::string content;
     while (1)
     {
@@ -100,6 +106,7 @@ void CommandResolver::ReceiveFile(CommandResolver::Command &C)
             std::cout<<"Received content: '"<<content<<"'\n";
             newFile<<content;
             newFile.flush();
+            newFile.close();
             break;
         }
     }
@@ -108,16 +115,22 @@ void CommandResolver::ReceiveFile(CommandResolver::Command &C)
 
 void CommandResolver::cd(CommandResolver::Command &C)
 {
+    std::string lsResult;
     try
     {
-        C.first.GetFileSystem().cd(C.second.substr(3));
+        lsResult = C.first.GetFileSystem().ls(C.second.substr(3));
     }
-    catch (std::exception& e)
+    catch(const std::exception& e)
     {
-        C.first.ReceiveAnswer("no_cd CANNOT_ACCESS\n");
+        C.first.ReceiveAnswer("no_cd PERMISSION_DENIED\n");
+        std::cout<<"cd Exception: "<<e.what()<<"\n";
         return;
     }
-    C.first.ReceiveAnswer("ok_cd\n");
+    
+    if (lsResult.back() == '\n')
+        C.first.ReceiveAnswer("ok_cd\n");
+    else
+        C.first.ReceiveAnswer("no_cd NOT_DIRECTORY\n");
 }
 
 void CommandResolver::commandNotFound(CommandResolver::Command &C)

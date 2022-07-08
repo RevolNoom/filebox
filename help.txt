@@ -1,6 +1,10 @@
 cd <path>: Move current working directory to <path>
+
 ls [path]: List files and directories in [path]. 
 	List files in current directory when @path is empty
+
 upload <localhost_path> <server_path>: Upload a file at localhost_path to server_path
+
 download <server_path> <localhost_path>: Download a file at server_path to localhost_path
+
 help: Show all available commands and usage

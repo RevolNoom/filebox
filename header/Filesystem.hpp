@@ -25,22 +25,26 @@ public:
     // @path can be absolute or relative. Default to current directory
     // @absolute=true returns the absolute path from _rootDirectory.
     // (Only list the files that your executable has permission to Read)
+    //
+    // If path points to a non-directory, return the filename of the path, without \n at end
     std::string ls(const std::string& path = "", bool absolute = false);
 
-    void cd(const std::string& path);
+    //void cd(const std::string& path);
 
     std::filesystem::path pwd();
 
+    bool CanRead(const std::filesystem::path &p);
+    bool CanWrite(const std::filesystem::path &p);
 private:
     // Print Real Working Directory. 
     // I know. I'm a genius at making up names
     // Returns working directory from the system root ("/")
     std::filesystem::path prwd();
 
-    bool CanRead(const std::filesystem::path &p);
-    bool CanWrite(const std::filesystem::path &p);
-
     bool CanHelper(const std::filesystem::path &p, int read_or_write_test_macro);
+
+    // Return the real path that leads to p on the host machine
+    std::filesystem::path ResolveVirtualPath(const std::filesystem::path &p);
 
 private:
     std::filesystem::path _rootDirectory;

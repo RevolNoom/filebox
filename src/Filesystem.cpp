@@ -29,22 +29,27 @@ File Filesystem::GetFile(const std::string& filePath)
     // TODO: Check read permissions?
     std::filesystem::path p(filePath);
     if (p.is_absolute())
-        return File(_rootDirectory.string() + "/" + filePath);
+        return File(_rootDirectory.string() + filePath);
     return File(prwd() / filePath);
 }
 
+/*
 void Filesystem::cd(const std::string& path)
 {
-    std::filesystem::path cwd(prwd());
-    cwd /= path;
+    std::filesystem::path cwd(path);
+    if (cwd.is_absolute())
+        cwd.assign(prwd().string() + path);
+    else
+        cwd.assign(prwd() / path);
 
     if (!std::filesystem::is_directory(cwd.string()))
         ThrowErrnoMsg(std::string("Not a directory: ") + cwd.string() + ". ");
     if (!CanRead(cwd))
         ThrowErrnoMsg(std::string("Can't cd: ") + cwd.string() + ". Permission denied.");
     
-    _cwd.assign(cwd);
-}
+    _cwd /= path;
+}*/
+
 
 std::filesystem::path Filesystem::pwd()
 {
@@ -60,41 +65,19 @@ std::string Filesystem::ls(const std::string& path, bool absolute)
 {
     std::string result("");
 
-    std::cout<<"path: "<<path<<"\n";
-    // TODO: Maybe, just maybe, I want to refactor a ResolvePath()?
+    std::filesystem::path lsPath(ResolveVirtualPath(path));
 
-    std::filesystem::path lsPath(path);
-
-    std::cout<<"prwd: "<<prwd()<<"\n";
-    std::cout<<"lsPath: "<<lsPath<<"\n\n";
-
-    if (lsPath.is_absolute())
-        lsPath.assign(path.substr(1));
-    
-    std::cout<<"prwd: "<<prwd()<<"\n";
-    std::cout<<"lsPath: "<<lsPath<<"\n\n";
-
-    lsPath.assign(_cwd / lsPath);
-
-    std::cout<<"prwd: "<<prwd()<<"\n";
-    std::cout<<"lsPath: "<<lsPath<<"\n\n";
+    if (!std::filesystem::is_directory(lsPath))
+        return lsPath.filename();
 
     std::filesystem::directory_iterator di(lsPath);
     for (auto &r: di)
     {
-        std::string appendToResult("");
-
-        std::filesystem::path path(r.path().string());
-
-        path.assign(path.filename());
-        
-        appendToResult = path.string();
+        result += r.path().filename();
         if (r.is_directory())
-            appendToResult +='/';
-
-        result += appendToResult + "\n";
+            result +='/';
+        result += '\n';
     }
-
     return result;
 }
 
@@ -117,11 +100,29 @@ bool Filesystem::CanWrite(const std::filesystem::path& p)
 
 bool Filesystem::CanHelper(const std::filesystem::path& p, int RWMacro)
 {
-    struct stat s;
-    if (stat(p.string().c_str(), &s) == 0)
-        return s.st_mode & RWMacro;
-    return false;
+    // Error when access() return -1 and errno is set
+    return access(ResolveVirtualPath(p).c_str(), RWMacro) == 0;
 }
+
+std::filesystem::path Filesystem::ResolveVirtualPath(const std::filesystem::path& p)
+{
+    std::filesystem::path result;
+    if (p.is_absolute())
+        result = _rootDirectory / p.string().substr(1);
+    else
+        result = prwd() / p;
+
+    result = std::filesystem::weakly_canonical(result);
+
+    std::cout<<"Resolved "<<p<<" to be "<<result<<"\n";
+    return result;
+}
+
+
+
+
+
+
 
 File::File(const std::string& filePath): _path(filePath)
 {
@@ -138,23 +139,6 @@ int File::GetSize()
         return -1;
     return std::filesystem::file_size(_path);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 const std::string File::GetPath(bool absolutePath)
 {
