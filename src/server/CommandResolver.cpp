@@ -56,7 +56,21 @@ void CommandResolver::ConsumeCommands()
 
 void CommandResolver::SendFile(CommandResolver::Command &C)
 {
-    std::string filename = C.second.substr(std::string("down ").length(), C.second.length() - std::string("down \n").length());
+    auto filename = C.second.substr(5);
+    filename.pop_back(); // Remove trailing \n
+
+    auto downFile = C.first.GetFileSystem().GetFile(filename);
+    if (!downFile.CanRead())
+    {
+        C.first.ReceiveAnswer("no_down CANT_READ_FILE");
+        return;
+    }
+
+    C.first.ReceiveAnswer("ok_down " + std::to_string(downFile.GetSize()) + "\n");
+
+    auto confirmation = C.first.GetConnection()->Receive();
+    if (confirmation == "ok_down\n")
+        C.first.ReceiveAnswer(downFile.GetContent());
 }
 
 void CommandResolver::ls(CommandResolver::Command &c)
@@ -67,36 +81,26 @@ void CommandResolver::ls(CommandResolver::Command &c)
 void CommandResolver::ReceiveFile(CommandResolver::Command &C)
 {
     // Dissect the packet
-    std::string metadata(C.second.substr(C.second.find_last_of(' ')+1));
-    metadata.pop_back(); // Remove trailing '\n'
-    std::cout<<"Metadata: '"<<metadata<<"'\n";
-    std::filesystem::path filename(metadata.substr(0, metadata.find_first_of(':')));
-    std::cout<<"filename: '"<<filename.string()<<"'\n";
-        
+    int beginFilepath = C.second.find_first_of(' '),
+        beginFilesize = C.second.find_last_of(' ');
+
+    std::filesystem::path filepath(C.second.substr(beginFilepath+1, beginFilesize-beginFilepath-1));
+    std::cout<<"filepath: '"<<filepath.string()<<"'\n";
     //TODO: Currently, file size is ignored
     // int filesize = ???; Check for system memory availability
 
-    std::filesystem::path destinationPath(C.second.substr(C.second.find_first_of(' ')+1));
-    destinationPath.assign(destinationPath.string().substr(0, destinationPath.string().find_last_of(' ')));
-
-    std::cout<<"Uploading to Destination path: "<<destinationPath<<"\n";
-    if (!C.first.GetFileSystem().CanWrite(destinationPath))
-    {
+    auto file = C.first.GetFileSystem().GetFile(filepath);
+    if (!file.CanWrite())
         C.first.ReceiveAnswer("no_up PERMISSION_DENIED\n");
-    }
 
 
-    // See if there's any files with same name or not
-    destinationPath /= filename.string();
-    std::cout<<"Destination Path: "<<destinationPath.string()<<"\n";
-    if (std::filesystem::exists(destinationPath))
+    if (file.Exist())
     {
         C.first.ReceiveAnswer("no_up FILE_EXIST\n");
         return;
     }
 
     C.first.GetConnection()->Send("ok_up\n");
-    std::ofstream newFile(destinationPath.string());
     std::string content;
     while (1)
     {
@@ -104,9 +108,7 @@ void CommandResolver::ReceiveFile(CommandResolver::Command &C)
         if (content != "")
         {
             std::cout<<"Received content: '"<<content<<"'\n";
-            newFile<<content;
-            newFile.flush();
-            newFile.close();
+            file.WriteContent(content);
             break;
         }
     }

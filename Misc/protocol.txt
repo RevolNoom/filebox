@@ -1,7 +1,4 @@
 Ghi chú:
-	METADATA:
-	+) Định dạng:
-	Tên_file:Kích_Cỡ_CHÍNH_XÁC_THEO_BYTE
 	+) Ví dụ:
 	presentation.pdf:3500 (file tên là presentation.pdf, kích thước 3500 byte (3.5KB))
 
@@ -9,7 +6,7 @@ Ghi chú:
 
 
 I. Client upload lên server
-Client gửi: "up /thư_mục_đến/trên_server/ METADATA\n"
+Client gửi: "up /thư_mục_đến/trên_server/ten_file file_size\n"
 Server gửi: "ok_up\n" nếu không có lỗi. "no_up ERROR_CODE\n" nếu có lỗi xảy ra
 Client bắt đầu truyền tệp: 
 Server dừng tiếp nhận thêm gói tin khi đã nhận đủ kích thước theo metadata
@@ -17,7 +14,7 @@ Server dừng tiếp nhận thêm gói tin khi đã nhận đủ kích thước 
 
 II. Client download từ server
 Client gửi: "down /thư_mục/trên_server/tên_file\n"
-Server gửi: "ok_down METADATA\n" nếu không có lỗi. "no_down ERROR_CODE\n" nếu có lỗi xảy ra
+Server gửi: "ok_down file_size\n" nếu không có lỗi. "no_down ERROR_CODE\n" nếu có lỗi xảy ra
 Client gửi: "ok_down\n" nếu không có lỗi. "no_down\n" nếu có lỗi xảy ra (hết bộ nhớ trên máy chẳng hạn).
 Server bắt đầu truyền tệp.
 Client dừng tiếp nhận thêm gói tin khi đã nhận đủ kích thước theo metadata

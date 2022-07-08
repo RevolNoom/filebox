@@ -16,9 +16,8 @@ public:
 
     Filesystem(const std::string& rootDirectory);
  
+    // Return a handle to manipulate a file
     File GetFile(const std::string& filePath);
-
-    // void CreateFile(const std::string& filePath, const std::string& content = "");
 
     // Return the file names and directories at @path
     // Directory path ends with "/"
@@ -33,15 +32,15 @@ public:
 
     std::filesystem::path pwd();
 
-    bool CanRead(const std::filesystem::path &p);
-    bool CanWrite(const std::filesystem::path &p);
+    //bool CanRead(const std::filesystem::path &p);
+    //bool CanWrite(const std::filesystem::path &p);
 private:
     // Print Real Working Directory. 
     // I know. I'm a genius at making up names
     // Returns working directory from the system root ("/")
     std::filesystem::path prwd();
 
-    bool CanHelper(const std::filesystem::path &p, int read_or_write_test_macro);
+    //bool CanHelper(const std::filesystem::path &p, int read_or_write_test_macro);
 
     // Return the real path that leads to p on the host machine
     std::filesystem::path ResolveVirtualPath(const std::filesystem::path &p);
@@ -60,23 +59,34 @@ public:
     // -1 if the file is invalid.
     int GetSize();
 
-    // Return true if the file is a regular file.
-    bool IsValid();
+    // Return true if the file is a regular file
+    // and can be write / read
+    //bool IsValid();
 
     std::string GetContent();
 
-    const std::string GetFileName();
+    void WriteContent(const std::string& content);
+
+    std::string Name();
+
+    bool Exist() const;
+    bool IsDirectory() const;
+
+    bool CanRead() const;
+    bool CanWrite() const;
 
     // Return the path to this file
     // If @absolutePath = true, the path will be 
     // absolute on the host Operating System 
-    const std::string GetPath(bool absolutePath = false);
+    //const std::string GetPath(bool absolutePath = false);
 
 private:
-    File() {}
-    File(const std::string& filePath);
+    bool CanHelper(int read_or_write_test_macro) const;
 
-    std::filesystem::path _path;
+private:
+    File(const std::filesystem::path& filePath);
+
+    std::filesystem::path _filePath;
 };
 
 #endif /* FILESYSTEM_HPP */

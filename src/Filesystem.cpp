@@ -26,11 +26,7 @@ Filesystem::Filesystem(const std::string& rootDirectory):
 
 File Filesystem::GetFile(const std::string& filePath)
 {
-    // TODO: Check read permissions?
-    std::filesystem::path p(filePath);
-    if (p.is_absolute())
-        return File(_rootDirectory.string() + filePath);
-    return File(prwd() / filePath);
+    return File(ResolveVirtualPath(filePath));
 }
 
 /*
@@ -81,7 +77,7 @@ std::string Filesystem::ls(const std::string& path, bool absolute)
     return result;
 }
 
-
+/*
 bool Filesystem::CanRead(const std::filesystem::path& p)
 {
     bool can = CanHelper(p, R_OK);
@@ -102,7 +98,7 @@ bool Filesystem::CanHelper(const std::filesystem::path& p, int RWMacro)
 {
     // Error when access() return -1 and errno is set
     return access(ResolveVirtualPath(p).c_str(), RWMacro) == 0;
-}
+}*/
 
 std::filesystem::path Filesystem::ResolveVirtualPath(const std::filesystem::path& p)
 {
@@ -122,29 +118,36 @@ std::filesystem::path Filesystem::ResolveVirtualPath(const std::filesystem::path
 
 
 
-
-
-File::File(const std::string& filePath): _path(filePath)
+bool File::CanRead() const
 {
+    return access(_filePath.c_str(), R_OK) == 0;
 }
 
-bool File::IsValid()
+bool File::CanWrite() const
 {
-    return std::filesystem::is_regular_file(_path);
+    if (std::filesystem::exists(_filePath))
+        return access(_filePath.c_str(), W_OK) == 0;
+    return access(_filePath.parent_path().c_str(), W_OK) == 0;
+}
+
+bool File::Exist() const
+{
+    return std::filesystem::exists(_filePath);
+}
+
+bool File::IsDirectory() const
+{
+    return std::filesystem::is_directory(_filePath);
+}
+
+File::File(const std::filesystem::path& filePath): 
+    _filePath(filePath)
+{
 }
 
 int File::GetSize()
 {
-    if (!IsValid())
-        return -1;
-    return std::filesystem::file_size(_path);
-}
-
-const std::string File::GetPath(bool absolutePath)
-{
-    if (absolutePath)
-        return std::filesystem::absolute(_path);;
-    return _path;
+    return std::filesystem::file_size(_filePath);
 }
 
 
@@ -153,14 +156,23 @@ const std::string File::GetPath(bool absolutePath)
 // I want to see if there are any better methods.
 std::string File::GetContent()
 {
-    std::ifstream input(_path, std::ios::binary );
+    std::ifstream input(_filePath, std::ios::binary);
     std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(input), {});
     int buffSize = buffer.size();
     std::string myString(buffer.begin(), buffer.end());
     return myString;
 }
 
-const std::string File::GetFileName()
+void File::WriteContent(const std::string& content)
 {
-    return _path.filename();
+    std::ofstream output(_filePath, std::ios::binary | std::ios::app);
+    output<<content;
+    output.flush();
+    output.close();
+}
+
+
+std::string File::Name()
+{
+    return _filePath.filename();
 }
