@@ -23,12 +23,11 @@ Authenticator::~Authenticator()
     _alive = false;
     for (auto &t: _threads)
         t.join();
-    //std::cout<<"Authenticator joined all threads!";
 }
 
 Authenticator::Credential Authenticator::GenerateCredential()
 {
-    return {"a", "1"};
+    return {"a", "a"};
 }
 
 const Authenticator::Credential& Authenticator::GetCredential()
@@ -47,9 +46,9 @@ void Authenticator::ListenNewUsers()
 {
     while (_alive)
     {
-        //std::cout<<"Listening\n";
         _listener.Listen();
         _pendingConnection.push_back(_listener.Accept());
+        std::cout<<"Authenticator got a new user!\n";
     }
 }
 
@@ -57,13 +56,27 @@ void Authenticator::Authenticate()
 {
     while (_alive)
     {
+        if (_pendingConnection.size() == 0)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            continue;
+        }
+            
         for (auto it_connection = _pendingConnection.begin();
             it_connection != _pendingConnection.end();)
         {
             auto connection = *it_connection;
+            if (connection->IsClosed())
+            {
+                auto temp = it_connection++;
+                _pendingConnection.erase(temp);
+                continue;
+            }
+
             auto credential = connection->Receive(); 
             if (credential != "")
             {
+                //std::cout<<"Received credential: "<<credential<<"\n";
                 if (credential == std::string("log ") + _credential.first + ":" + _credential.second + "\n")
                 {
                     connection->Send("ok_log\n");

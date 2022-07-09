@@ -32,6 +32,10 @@ public:
 
     std::string GetRemoteIP() const;
 
+    // A Connection will be closed in case an error happens
+    // Or when remote closes connection
+    bool IsClosed() const;
+
     //int GetPort();
     //int GetSockType();
 
@@ -54,6 +58,13 @@ private:
     // I say it's an IPv6 if it has a ':' in it
     bool IsIPv6QuickCheck(const std::string &ip) const;
     addrinfo* GetAddrInfo(const std::string &ip, int port, int ai_socktype) const;
+
+    void Close();
+
+    friend class BackgroundConnectionUpdater;
+    int GetFileDescriptor() const;
+    void FetchBuffer();
+
 
     class Buffer
     {
@@ -84,6 +95,7 @@ private:
 
     Buffer _recvBuffer;
 
+    bool _closed;
     //STATE _state;
     static constexpr size_t MAX_BUFFER_SIZE = 1000;
 };

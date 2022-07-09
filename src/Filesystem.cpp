@@ -19,7 +19,7 @@ Filesystem::Filesystem(const std::string& rootDirectory):
     _rootDirectory(rootDirectory),
     _cwd(".")
 { 
-    std::cout<<"Virtual filesystem initialized at root path: "<<_rootDirectory<<"\n";
+    //std::cout<<"Virtual filesystem initialized at root path: "<<_rootDirectory<<"\n";
     if (!std::filesystem::exists(_rootDirectory))
         throw std::invalid_argument(std::string("Root directory ") + _rootDirectory.string() + " does not exist!");
 }
@@ -110,7 +110,7 @@ std::filesystem::path Filesystem::ResolveVirtualPath(const std::filesystem::path
 
     result = std::filesystem::weakly_canonical(result);
 
-    std::cout<<"Resolved "<<p<<" to be "<<result<<"\n";
+    //std::cout<<"Resolved "<<p<<" to be "<<result<<"\n";
     return result;
 }
 

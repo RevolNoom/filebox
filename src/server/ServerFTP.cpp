@@ -24,8 +24,15 @@ void ServerFTP::Start()
 {
     _auth.Start();
     while (true)
-        for (auto it = _users.begin(); it != _users.end(); ++it)
+        for (auto it = _users.begin(); it != _users.end(); )
         {
-            _cmdr.Resolve(*it);
+            if (it->GetConnection()->IsClosed())
+            {
+                auto temp = it++;
+                _users.erase(temp);
+                continue;
+            }
+                
+            _cmdr.Resolve(*(it++));
         }
 }

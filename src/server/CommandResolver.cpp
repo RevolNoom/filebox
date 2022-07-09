@@ -39,7 +39,10 @@ void CommandResolver::ConsumeCommands()
     while (_alive)
     {
         if (_cmdQueue.begin() == _cmdQueue.end())
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
             continue;
+        }
 
         auto command = _cmdQueue.front();
         _cmdQueue.pop_front();
@@ -68,7 +71,7 @@ void CommandResolver::SendFile(CommandResolver::Command &C)
 
     C.first.ReceiveAnswer("ok_down " + std::to_string(downFile.GetSize()) + "\n");
 
-    auto confirmation = C.first.GetConnection()->Receive();
+    auto confirmation = C.first.GetConnection()->Receive(true);
     if (confirmation == "ok_down\n")
         C.first.ReceiveAnswer(downFile.GetContent());
 }
@@ -101,17 +104,10 @@ void CommandResolver::ReceiveFile(CommandResolver::Command &C)
     }
 
     C.first.GetConnection()->Send("ok_up\n");
-    std::string content;
-    while (1)
-    {
-        content = C.first.GetConnection()->Receive();
-        if (content != "")
-        {
-            std::cout<<"Received content: '"<<content<<"'\n";
-            file.WriteContent(content);
-            break;
-        }
-    }
+    std::string content = C.first.GetConnection()->Receive(true);
+
+    std::cout<<"Received content: '"<<content<<"'\n";
+    file.WriteContent(content);
     std::cout<<"File received.\n";
 }
 

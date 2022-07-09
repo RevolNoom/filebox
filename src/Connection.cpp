@@ -1,6 +1,9 @@
 #include "Connection.hpp"
 #include <iostream>
 #include <algorithm>
+#include <thread>
+#include "BackgroundConnectionUpdater.hpp"
+#include <fcntl.h>
 
 void ThrowErrnoMsg(const std::string &msg)
 {
@@ -9,7 +12,8 @@ void ThrowErrnoMsg(const std::string &msg)
 
 // Try to connect to ip:port destination
 Connection::Connection(const std::string &ip, int port, int ai_socktype): 
-    _sockType(ai_socktype)
+    _sockType(ai_socktype),
+    _closed(false)
 {
     auto result = GetAddrInfo(ip, port, ai_socktype);
 
@@ -20,40 +24,39 @@ Connection::Connection(const std::string &ip, int port, int ai_socktype):
     _sock = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
     //std::cout<<"Socket call: "<<_sock<<"\n";
     if (_sock == -1)
-    {
         ThrowErrnoMsg("Connection failed to create new socket: ");
-    }
 
     //std::cout<<"Connection new socket: "<<_sock<<"\n";
 
     if (connect(_sock, result->ai_addr, result->ai_addrlen) == -1)
-    {
         ThrowErrnoMsg("Connection failed: ");
-    }
     //    _state = ERROR;
     //}
     //else
     //    _state = CONNECTED;
 
     freeaddrinfo(result);
+
+    // TODO: Maybe refactor these two lines?
+    fcntl(_sock, F_SETFL, O_NONBLOCK);
+    BackgroundConnectionUpdater::Singleton().Subscribe(this);
 }
 
 Connection::Connection(int acceptedSocket, sockaddr_storage sockInfo, int sockType):
     _remoteInfo(sockInfo),
     _sock(acceptedSocket),
-    _sockType(sockType)
+    _sockType(sockType),
+    _closed(false)
 {
     if (_sock == -1)
-    {
         ThrowErrnoMsg("Connection failed to create new socket: ");
-    }
-
-    //std::cout<<"Connection new socket: "<<_sock<<"\n";
+    fcntl(_sock, F_SETFL, O_NONBLOCK);
+    BackgroundConnectionUpdater::Singleton().Subscribe(this);
 }
 
 Connection::~Connection()
 {
-    close(_sock);
+    Close();
 }
 
 
@@ -61,6 +64,9 @@ Connection::~Connection()
 // [byte-size] message ...
 void Connection::Send(const std::string& message)
 {
+    if (IsClosed())
+        ThrowErrnoMsg("Connection closed.");
+
     Int64ToRawBytes messageSize;
     messageSize._int = message.length();
 
@@ -79,38 +85,65 @@ void Connection::Send(const std::string& message)
         if (bytes_sent == -1)
         {
             ThrowErrnoMsg("Connection failed to send message: ");
+            Close();
         }
 
         s.remove_prefix(bytes_sent);
     }
 }
 
+void Connection::Close() 
+{
+    if (!IsClosed())
+    {
+        _closed = true;
+        BackgroundConnectionUpdater::Singleton().Unsubscribe(this);
+        close(_sock);
+    }
+}
+
+bool Connection::IsClosed() const
+{
+    return _closed;
+}
+
 std::string Connection::Receive(bool blocking)
 {
-    char recvBuffer[MAX_BUFFER_SIZE];
-
     do
     {
-        int bytes_read = recv(_sock, recvBuffer, MAX_BUFFER_SIZE-1, 0);
-        if (bytes_read == -1)
-            ThrowErrnoMsg("Connection failed to receive message because of: ");
-
-        // TODO: Close Connection
-        if (bytes_read == 0)
-            return "";
-
-        _recvBuffer.Write(recvBuffer, bytes_read);
-
         auto msg = _recvBuffer.GetMessage();
 
         if (msg != "")
             return msg;
+
+        if (blocking)
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     while (blocking);
 
-    return ""; // Suppress warning messages
+    return ""; 
 }
 
+void Connection::FetchBuffer()
+{
+    char recvBuffer[MAX_BUFFER_SIZE];
+    int bytes_read = recv(_sock, recvBuffer, MAX_BUFFER_SIZE-1, 0);
+    if (bytes_read == -1)
+    {
+        // F Unix. Why you block me even when select() says recv() is ready? =_=
+        if (errno == EAGAIN || errno == EWOULDBLOCK)
+            return;
+
+        ThrowErrnoMsg("Connection failed to receive message because of: ");
+        Close();
+    }
+
+    if (bytes_read == 0)
+        Close();
+
+
+    _recvBuffer.Write(recvBuffer, bytes_read);
+}
 
 std::string Connection::GetRemoteIP() const
 {
@@ -226,4 +259,9 @@ std::string Connection::Buffer::GetFront(int count)
     }
 
     return result;
+}
+
+int Connection::GetFileDescriptor() const
+{
+    return _sock;
 }
