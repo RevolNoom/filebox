@@ -109,40 +109,62 @@ bool Connection::IsClosed() const
 
 std::string Connection::Receive(bool blocking)
 {
+    if (IsClosed())
+        ThrowErrnoMsg("Socket closed: " + std::to_string(_sock));
+
+    std::string msg;
     do
     {
-        auto msg = _recvBuffer.GetMessage();
+        msg = _recvBuffer.GetMessage();
 
         if (msg != "")
-            return msg;
+            break;
 
-        if (blocking)
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        //std::cout<<"Blocking!\n";
     }
     while (blocking);
 
-    return ""; 
+    //if (msg.length())
+    //    std::cout<<"Received: '"<<msg<<"'\n";
+
+    return msg;
 }
 
 void Connection::FetchBuffer()
 {
+    if (IsClosed())
+        ThrowErrnoMsg("Socket closed: " + std::to_string(_sock));
+
+    //std::cout<<"Fetching buffer for "<<_sock<<"\n";
     char recvBuffer[MAX_BUFFER_SIZE];
-    int bytes_read = recv(_sock, recvBuffer, MAX_BUFFER_SIZE-1, 0);
-    if (bytes_read == -1)
+
+    constexpr bool recvHasSomething = true;
+    while (recvHasSomething)
     {
-        // F Unix. Why you block me even when select() says recv() is ready? =_=
-        if (errno == EAGAIN || errno == EWOULDBLOCK)
+        int bytes_read = recv(_sock, recvBuffer, MAX_BUFFER_SIZE-1, MSG_DONTWAIT);
+        if (bytes_read == -1)
+        {
+            // F Unix. Why you block me even when select() says recv() is ready? =_=
+            if (errno == EAGAIN || errno == EWOULDBLOCK)
+            {
+                //std::cout<<"Would block\n";
+                return;
+            }
+
+            Close();
+            ThrowErrnoMsg("Connection failed to receive message because of: ");
+        }
+
+        if (bytes_read == 0)
+        {
+            Close();
             return;
+        }
 
-        ThrowErrnoMsg("Connection failed to receive message because of: ");
-        Close();
+        _recvBuffer.Write(recvBuffer, bytes_read);
+        break;
     }
-
-    if (bytes_read == 0)
-        Close();
-
-
-    _recvBuffer.Write(recvBuffer, bytes_read);
 }
 
 std::string Connection::GetRemoteIP() const
@@ -217,8 +239,15 @@ addrinfo* Connection::GetAddrInfo(const std::string &ip, int port, int ai_sockty
 
 void Connection::Buffer::Write(const char* src, int count)
 {
+    _bufferProtector.lock();
+    //std::cout<<"Writing: '";
     for (int iii=0; iii<count; ++iii)
+    {
+    //    std::cout<<char(src[iii])<<"";
         _recvBuffer.push_back(src[iii]);
+    }
+    //std::cout<<"'\n";
+    _bufferProtector.unlock();
 }
 
 
@@ -226,7 +255,9 @@ std::string Connection::Buffer::GetMessage()
 {
     // Avoid reading out-of-range stream
     if (_recvBuffer.size() < MESSAGE_HEADER_SIZE)
+    {
         return "";
+    }
 
     Int64ToRawBytes sizeStamp;
     strncpy(sizeStamp._str, GetFront(MESSAGE_HEADER_SIZE).c_str(), MESSAGE_HEADER_SIZE);
@@ -242,8 +273,10 @@ std::string Connection::Buffer::GetMessage()
 
 void Connection::Buffer::WriteFront(const char* src, int count)
 {
+    _bufferProtector.lock();
     while (count-- >= 0)
         _recvBuffer.push_front(src[count]);
+    _bufferProtector.unlock();
 }
 
 
@@ -252,11 +285,13 @@ std::string Connection::Buffer::GetFront(int count)
     std::string result;
     result.reserve(count);
 
+    _bufferProtector.lock();
     for (int iii = 0; iii<count; ++iii)
     {
         result+=_recvBuffer.front();
         _recvBuffer.pop_front();
     }
+    _bufferProtector.unlock();
 
     return result;
 }

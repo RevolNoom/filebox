@@ -59,21 +59,45 @@ void CommandResolver::ConsumeCommands()
 
 void CommandResolver::SendFile(CommandResolver::Command &C)
 {
+    std::cout<<"1\n";
     auto filename = C.second.substr(5);
     filename.pop_back(); // Remove trailing \n
 
+    std::cout<<"2\n";
     auto downFile = C.first.GetFileSystem().GetFile(filename);
+    std::cout<<"3\n";
     if (!downFile.CanRead())
     {
         C.first.ReceiveAnswer("no_down CANT_READ_FILE");
         return;
     }
+    std::cout<<"4\n";
 
     C.first.ReceiveAnswer("ok_down " + std::to_string(downFile.GetSize()) + "\n");
 
+
+    std::cout<<"Getting confirmation\n";
+    /*
+    std::string confirmation;
+    while (1)
+    {
+        confirmation = C.first.GetConnection()->Receive();
+        if (confirmation != "")
+        {
+            std::cout<<"Confirmation: "<<confirmation<<"\n";
+            break;
+        }
+    }
+    */
+
     auto confirmation = C.first.GetConnection()->Receive(true);
+    std::cout<<"6\n";
     if (confirmation == "ok_down\n")
+    {
+        std::cout<<"Sending file to client.\n";
         C.first.ReceiveAnswer(downFile.GetContent());
+        std::cout<<"File sent!\n";
+    }
 }
 
 void CommandResolver::ls(CommandResolver::Command &c)

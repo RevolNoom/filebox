@@ -4,6 +4,7 @@
 #include "mysocket.hpp"
 #include <deque>
 #include <sstream>
+#include <mutex>
 
 void ThrowErrnoMsg(const std::string &msg);
 
@@ -84,6 +85,7 @@ private:
         std::string GetFront(int count);
 
     private:
+        std::mutex _bufferProtector;
         std::deque<char> _recvBuffer;
     };
 

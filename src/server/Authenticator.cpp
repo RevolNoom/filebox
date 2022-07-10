@@ -76,17 +76,21 @@ void Authenticator::Authenticate()
             auto credential = connection->Receive(); 
             if (credential != "")
             {
-                //std::cout<<"Received credential: "<<credential<<"\n";
+                std::cout<<"Received credential: "<<credential<<"\n";
                 if (credential == std::string("log ") + _credential.first + ":" + _credential.second + "\n")
                 {
                     connection->Send("ok_log\n");
+                    std::cout<<"Sent ok_log\n";
                     _employer->AcceptNewUser(ActiveUser(connection));
                     auto temp = it_connection++;
                     _pendingConnection.erase(temp);
                     continue;
                 }
                 else 
+                {
                     connection->Send("no_log WRONG_CREDENTIAL\n");
+                    std::cout<<"Sent no_log\n";
+                }
             }
 
             // Iterator increment is put here
